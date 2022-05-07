@@ -1,0 +1,19 @@
+{
+    // IntelliSense を使用して利用可能な属性を学べます。
+    // 既存の属性の説明をホバーして表示します。
+    // 詳細情報は次を確認してください: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Cortex Debug",
+            "cwd": "${workspaceFolder}",
+            "type": "cortex-debug",
+            "request": "launch",
+            "executable": "./build/sylphy_echo.elf",
+            "runToEntryPoint": "main",
+            "servertype": "external",
+            "gdbTarget": "host.docker.internal:3333",
+            "preLaunchTask": "build",
+        }
+    ]
+}
