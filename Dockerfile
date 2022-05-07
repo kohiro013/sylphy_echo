@@ -22,6 +22,7 @@ RUN apt-get update && apt-get upgrade -y \
         openocd \
         telnet \
         libncurses5-dev \
+        openssh-server \
     && apt-get clean \
     && rm -r /var/lib/apt/lists/* \
     && mkdir -p /tmp/src
