@@ -6,9 +6,7 @@
             "label": "build",
             "command": "make",
             "args": [
-                "DEBUG=1",
-                "-j13",
-                "all"
+                "build",
             ],
             "problemMatcher": [
                 "$gcc"
