@@ -3,11 +3,9 @@
 	"dockerFile": "../Dockerfile",
 	"settings": {},
 	"extensions": [
-		"ms-vscode.cpptools",
+		"ms-vscode.cpptools-extension-pack",
 		"ms-vscode.makefile-tools",
-		"ms-vscode.cmake-tools",
 		"donjayamanne.githistory",
-		"cschlosser.doxdocgen",
 		"marus25.cortex-debug"
 	],
 	"context": ".."
