@@ -1,5 +1,4 @@
 /build/
 /.mxproject
-/.vscode/configurationCache.log
-/.vscode/dryrun.log
-/.vscode/targets.log
+/.vscode/settings.json
+/.vscode/*.log
