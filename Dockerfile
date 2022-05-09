@@ -6,9 +6,10 @@ ENV GOOGLE_TEST_VERSION 1.11.0
 ENV DEBIAN_FRONTEND=noninteractive
 ENV DISPLAY=host.docker.internal:0
 
-# 開発に必要なパッケージをインストール(ダウンロード元のリポジトリを日本サーバーに変更)
+# 開発に必要なパッケージをインストール
 RUN apt-get update && apt-get upgrade -y \
     && apt-get install --no-install-recommends -y \
+        locales \
         build-essential \
         gcc \
         make \
@@ -23,9 +24,23 @@ RUN apt-get update && apt-get upgrade -y \
         telnet \
         libncurses5-dev \
         openssh-server \
+        python3.9 \
+        python3-dev \
+        python3-numpy \
+        python3-tk \
+        python3-matplotlib \
     && apt-get clean \
     && rm -r /var/lib/apt/lists/* \
     && mkdir -p /tmp/src
+
+# Set locale
+RUN sed -i '/^#.* ja_JP.UTF-8 /s/^#//' /etc/locale.gen \
+    && locale-gen \
+    && ln -fs /usr/share/zoneinfo/Asia/Tokyo /etc/localtime\
+    && dpkg-reconfigure -f noninteractive tzdata
+ENV LANG="ja_JP.UTF-8"
+ENV LANGUAGE="ja_JP:ja"
+ENV LC_ALL="ja_JP.UTF-8"
 
 # arm-none-eabi-gccをインストールする
 WORKDIR /tmp/src
