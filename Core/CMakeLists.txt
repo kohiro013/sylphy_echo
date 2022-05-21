@@ -23,7 +23,7 @@ add_definitions(-DVDD_VALUE=3300)
 add_definitions(-DPREFETCH_ENABLE=1)
 add_definitions(-DINSTRUCTION_CACHE_ENABLE=1)
 add_definitions(-DDATA_CACHE_ENABLE=1)
-add_definitions(-DSTM32F413xx)
+add_definitions(-DSTM32F411xE)
 
 # sub_directory
 add_subdirectory(../Drivers/STM32F4xx_HAL_Driver ../build/Drivers/STM32F4xx_HAL_Driver)
@@ -39,7 +39,7 @@ include_directories(
 # sources
 file(GLOB SRCS
     Src/*.c
-    ../startup_stm32f413xx.s
+    ../startup_stm32f411xe.s
 )
 
 # executables

@@ -13,7 +13,7 @@ set(SIZE               arm-none-eabi-size)
 set(CPU       cortex-m4)
 set(FPU       -mfpu=fpv4-sp-d16)
 set(FLOAT_ABI -mfloat-abi=hard)
-set(LDSCRIPT  ../STM32F413CHUx_FLASH.ld)
+set(LDSCRIPT  ../STM32F411CEUx_FLASH.ld)
 
 # compiler options
 add_compile_options(-Og)
