@@ -4,9 +4,9 @@
 	"settings": {},
 	"extensions": [
 		"ms-vscode.cpptools-extension-pack",
-		"ms-vscode.makefile-tools",
 		"donjayamanne.githistory",
 		"marus25.cortex-debug"
 	],
-	"context": ".."
+	"context": "..",
+	"remoteUser": "vscode",
 }

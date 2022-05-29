@@ -6,6 +6,10 @@ ENV GOOGLE_TEST_VERSION 1.11.0
 ENV DEBIAN_FRONTEND=noninteractive
 ENV DISPLAY=host.docker.internal:0
 
+ENV USER_ID=1000
+ENV GROUP_ID=1000
+ENV USER_NAME=vscode
+
 # 開発に必要なパッケージをインストール
 RUN apt-get update && apt-get upgrade -y \
     && apt-get install --no-install-recommends -y \
@@ -62,3 +66,8 @@ RUN curl -OL https://github.com/google/googletest/archive/release-${GOOGLE_TEST_
 # インストール作業で出た一時的なファイルを削除
 WORKDIR /tmp
 RUN rm -rf ./src/
+
+# UIDとGIDの設定
+RUN groupadd -g ${GROUP_ID} ${USER_NAME} \
+    && useradd -d /home/${USER_NAME} -m -s /bin/bash -u ${USER_ID} -g ${GROUP_ID} ${USER_NAME}
+    
