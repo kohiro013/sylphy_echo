@@ -27,6 +27,7 @@ add_definitions(-DSTM32F411xE)
 
 # sub_directory
 add_subdirectory(../Drivers/STM32F4xx_HAL_Driver ../build/Drivers/STM32F4xx_HAL_Driver)
+add_subdirectory(../Peripheral ../build/Peripheral)
 
 # includes
 include_directories(
@@ -34,6 +35,7 @@ include_directories(
     ../Drivers/STM32F4xx_HAL_Driver/Inc
     ../Drivers/CMSIS/Device/ST/STM32F4xx/Include
     ../Drivers/CMSIS/Include
+    ../Peripheral/Inc
 )
 
 # sources
@@ -48,6 +50,7 @@ add_executable(${ELF_FILE} ${SRCS})
 # target_link
 target_link_libraries(${ELF_FILE}
 	hal
+    peripheral
 )
 
 add_custom_command(TARGET ${ELF_FILE} POST_BUILD

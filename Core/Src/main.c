@@ -53,7 +53,7 @@
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 /* USER CODE BEGIN PFP */
-
+extern void led_c_wrapper_example(void);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -113,6 +113,9 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+    led_c_wrapper_example();
+    //LL_GPIO_TogglePin(LED1_GPIO_Port, LED1_Pin);
+    //LL_mDelay(500);
   }
   /* USER CODE END 3 */
 }
