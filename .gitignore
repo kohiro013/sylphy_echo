@@ -1,4 +1,5 @@
 /build/
 /.mxproject
 /.vscode/settings.json
+/.vscode/.cortex-debug.registers.state.json
 /.vscode/*.log

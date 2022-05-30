@@ -26,7 +26,7 @@ RUN apt-get update && apt-get upgrade -y \
         x11-apps \
         openocd \
         telnet \
-        libncurses5-dev \
+        libncurses5 \
         openssh-server \
         python3.9 \
         python3-dev \

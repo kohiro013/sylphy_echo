@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.13)
 
 # project
-project(shyphy_echo)
+project(sylphy_echo)
 set(ELF_FILE ${PROJECT_NAME}.elf)
 set(HEX_FILE ${PROJECT_NAME}.hex)
 set(BIN_FILE ${PROJECT_NAME}.bin)
