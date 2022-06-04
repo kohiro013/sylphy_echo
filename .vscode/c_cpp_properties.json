@@ -9,10 +9,10 @@
                 "/usr/include/**"
             ],
             "defines": [
-                "USE_HAL_DRIVER",
                 "USE_FULL_LL_DRIVER",
                 "STM32F411xE",
-                "__weak=__attribute__((weak))"
+                "__weak=__attribute__((weak))",
+                "__packed=__attribute__((__packed__))"
             ],
             "compilerPath": "/opt/gcc-arm-none-eabi/bin/arm-none-eabi-gcc",
             "cStandard": "c11",

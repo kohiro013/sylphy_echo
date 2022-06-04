@@ -8,4 +8,4 @@ include_directories(
 file(GLOB SRCS
     Src/*.cpp
 )
-add_library(peripheral STATIC ${SRCS})
+add_library(module STATIC ${SRCS})

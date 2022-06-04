@@ -23,6 +23,7 @@ add_compile_options(-fdata-sections)
 add_compile_options(-fstack-usage)
 
 set(CMAKE_C_FLAGS "-mcpu=${CPU} -std=gnu11 ${FPU} ${FLOAT_ABI} -mthumb")
-set(CMAKE_CXX_FLAGS "-mcpu=${CPU} -std=gnu++14 -fno-use-cxa-atexit ${FPU} ${FLOAT_ABI} -mthumb")
+set(CMAKE_CXX_FLAGS "-mcpu=${CPU} -std=gnu++17 -fno-use-cxa-atexit ${FPU} ${FLOAT_ABI} -mthumb")
 set(CMAKE_AS_FLAGS "-mcpu=${CPU} -x assembler-with-cpp ${FPU} ${FLOAT_ABI} -mthumb")
-set(CMAKE_EXE_LINKER_FLAGS "-mcpu=${CPU} -T${CMAKE_CURRENT_SOURCE_DIR}/${LDSCRIPT} --specs=nosys.specs -Wl,-Map=${MAP_FILE} -Wl,--gc-sections -static --specs=nano.specs ${FPU} ${FLOAT_ABI} -mthumb -Wl,--start-group -lc -lm -lstdc++ -lsupc++ -Wl,--end-group")
+set(CMAKE_EXE_LINKER_FLAGS "-mcpu=${CPU} -T${CMAKE_CURRENT_SOURCE_DIR}/${LDSCRIPT} --specs=nosys.specs -Wl,--gc-sections -static 
+	--specs=nano.specs ${FPU} ${FLOAT_ABI} -mthumb -Wl,--start-group -lc -lm -lstdc++ -lsupc++ -Wl,--end-group -u _printf_float -u _scanf_float")
