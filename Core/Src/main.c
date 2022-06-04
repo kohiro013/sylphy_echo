@@ -27,7 +27,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include <stdio.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -53,7 +53,9 @@
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 /* USER CODE BEGIN PFP */
-extern void led_c_wrapper_example(void);
+extern void Communicate_Initialize(void);
+extern void Interrupt_Initialize(void);
+extern void LED_HardwareTest(void);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -103,7 +105,8 @@ int main(void)
   MX_SPI1_Init();
   MX_SPI2_Init();
   /* USER CODE BEGIN 2 */
-
+  Communicate_Initialize();
+  Interrupt_Initialize();
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -113,9 +116,9 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-    led_c_wrapper_example();
-    //LL_GPIO_TogglePin(LED1_GPIO_Port, LED1_Pin);
-    //LL_mDelay(500);
+    LED_HardwareTest();
+    printf("Hello World! : %f\r\n", 100.f);
+    LL_mDelay(500);
   }
   /* USER CODE END 3 */
 }
