@@ -28,6 +28,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include <stdio.h>
+#include "arm_math.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -117,7 +118,7 @@ int main(void)
 
     /* USER CODE BEGIN 3 */
     LED_HardwareTest();
-    printf("Hello World! : %f\r\n", 100.f);
+    printf("Hello World! : %f, %f\r\n", arm_cos_f32(PI), arm_sin_f32(PI));
     LL_mDelay(500);
   }
   /* USER CODE END 3 */

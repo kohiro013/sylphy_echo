@@ -15,3 +15,10 @@ build: ## マイコン用elfファイル生成
 clean: ## buildディレクトリを消去
 	rm -rf build
 
+.PHONY: plot
+plot: ## 迷路シミュレータ
+	rm -rf Graphics/build
+	mkdir -p Graphics/build
+	cmake -S Graphics -B Graphics/build -G Ninja
+	cmake --build Graphics/build
+	Graphics/build/main

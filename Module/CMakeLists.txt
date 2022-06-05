@@ -3,6 +3,11 @@ include_directories(
     ../Drivers/CMSIS/Device/ST/STM32F4xx/Include
     ../Drivers/CMSIS/Include
     ../Core/Inc
+    ../Library/CMSIS-DSP/Include
+    ../Library/CMSIS-DSP/Include/dsp
+    ../Library/CMSIS-DSP/PrivateInclude
+    ../Library/ntshell-v0.3.1/lib/core
+    ../Library/ntshell-v0.3.1/lib/util
     Inc
 )
 file(GLOB SRCS

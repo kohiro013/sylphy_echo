@@ -28,6 +28,7 @@ add_definitions(-DSTM32F411xE)
 # sub_directory
 add_subdirectory(../Drivers/STM32F4xx_HAL_Driver ../build/Drivers/STM32F4xx_HAL_Driver)
 add_subdirectory(../Module ../build/Module)
+add_subdirectory(../Library ../build/Library)
 
 # includes
 include_directories(
@@ -36,6 +37,11 @@ include_directories(
     ../Drivers/CMSIS/Device/ST/STM32F4xx/Include
     ../Drivers/CMSIS/Include
     ../Module/Inc
+    ../Library/CMSIS-DSP/Include
+    ../Library/CMSIS-DSP/Include/dsp
+    ../Library/CMSIS-DSP/PrivateInclude
+    ../Library/ntshell-v0.3.1/lib/core
+    ../Library/ntshell-v0.3.1/lib/util
 )
 
 # sources
@@ -51,6 +57,7 @@ add_executable(${ELF_FILE} ${SRCS})
 target_link_libraries(${ELF_FILE}
 	hal
     module
+    library
 )
 
 add_custom_command(TARGET ${ELF_FILE} POST_BUILD
