@@ -14,4 +14,4 @@ if %HEX_COUNT%==1 (
     echo Too Many HEX file.
     pause >nul
 )
-pause >nul
+rem pause >nul
