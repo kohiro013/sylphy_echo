@@ -1,29 +1,23 @@
 #ifndef __led_controller_H
 #define __led_controller_H
 
+#include "baseModule.hpp"
 #include "led.hpp"
 #include <memory>
 
 namespace module
 {
-	class led_controller
+	class ledController : public BaseModule<ledController>
 	{
 	public:
-		static led_controller& getInstance(void) {
-			static led_controller _instance;
-			return _instance;
-		}
-		void updateTimer(void);
+		void update(void) override;
 		void lightBinary(uint8_t);
 		void toggleBinary(uint8_t);
 		void flashBinary(uint8_t, uint16_t);
 
 	private:
-		led_controller();
-		led_controller(const led_controller&) = delete;
-		led_controller& operator=(const led_controller&) = delete;
-		led_controller(led_controller&&) = delete;
-		led_controller& operator=(led_controller&&) = delete;
+		ledController();
+		friend class BaseModule<ledController>;
 
 		uint8_t  _num;
 		uint8_t  _mode;

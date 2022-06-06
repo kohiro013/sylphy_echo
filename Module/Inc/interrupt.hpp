@@ -15,7 +15,8 @@ namespace module
 		}
 		void 		preProcess(void);
 		void 		postProcess(void);
-		uint32_t    getGlobalTimre(void) const;
+		uint32_t 	getElapsedUsec(void) const;
+		uint32_t    getGlobalTimer(void) const;
 		int32_t     getDuty(void) const;
 		int32_t     getMaxDuty(void) const;
 		float       getBootTime(void) const;
@@ -30,7 +31,7 @@ namespace module
 
 		volatile uint32_t   _global_timer;
 		volatile uint32_t   _counter;
-		volatile int32_t    _dury;
+		volatile int32_t    _duty;
 		volatile int32_t    _duty_max;
 		volatile float      _boot_time;
 	};

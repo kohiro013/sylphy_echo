@@ -1,20 +1,17 @@
 #include "interrupt.hpp"
-#include "led_controller.hpp"
+#include "ledController.hpp"
 
-namespace {
-	TIM_TypeDef *const HANDLE = TIM5;
-	const uint32_t PCLK = 48000000;
-	const uint32_t TIMER_COUNT = LL_TIM_GetCounter(HANDLE);
-	const uint32_t TIMRE_LOAD = LL_TIM_GetAutoReload(HANDLE) + 1;
-	const uint32_t TIMER_PSC = LL_TIM_GetPrescaler(HANDLE) + 1;
-}
+#define HANDLE 		(TIM5)
+#define TIMER_COUNT (LL_TIM_GetCounter(HANDLE))
+#define TIMER_LOAD	(LL_TIM_GetAutoReload(HANDLE) + 1)
+#define TIMER_PSC 	(LL_TIM_GetPrescaler(HANDLE) + 1)
 
 namespace module
 {
 	interrupt::interrupt():
 		 _global_timer{0},
 		_counter{0},
-		_dury{0},
+		_duty{0},
 		_duty_max{0},
 		_boot_time{0.f}
 	{}
@@ -26,17 +23,21 @@ namespace module
 	}
 
 	void interrupt::postProcess(void) {
-		_dury = static_cast<uint16_t>(std::min(TIMER_COUNT - _counter, 
-												TIMER_COUNT - _counter + TIMRE_LOAD)) * 1000 / TIMER_PSC;
-		_duty_max = std::max(_duty_max, _dury);
+		_duty = static_cast<uint16_t>(std::min(TIMER_COUNT - _counter, 
+											   TIMER_COUNT - _counter + TIMER_LOAD)) * 1000 / TIMER_LOAD;
+		_duty_max = std::max(_duty_max, _duty);
 	}
 
-	uint32_t interrupt::getGlobalTimre(void) const {
+	uint32_t interrupt::getElapsedUsec(void) const {
+		return  _global_timer*1000 + static_cast<float>(TIMER_COUNT) / TIMER_PSC / TIMER_LOAD * 1000000;
+	}
+
+	uint32_t interrupt::getGlobalTimer(void) const {
 		return _global_timer;
 	}
 
 	int32_t interrupt::getDuty(void) const {
-		return _dury;
+		return _duty;
 	}
 
 	int32_t interrupt::getMaxDuty(void) const {
@@ -54,7 +55,7 @@ namespace module
 }
 
 void Interrupt_Main(void) {
-	module::led_controller::getInstance().updateTimer();
+	module::ledController::getInstance().cycle();
 }
 
 void Interrupt_Initialize(void) {

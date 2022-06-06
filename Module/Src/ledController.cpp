@@ -1,5 +1,4 @@
-#include "led_controller.hpp"
-#include "interrupt.hpp"
+#include "ledController.hpp"
 
 // LEDの点灯モード列挙
 enum {
@@ -10,18 +9,19 @@ enum {
 
 namespace module
 {
-	led_controller::led_controller():
+	ledController::ledController():
 		_num{0x00},
 		_mode{NORMAL},
 		_interval{0}
 	{
+		setModuleName("LedController");
 		_led0 = std::make_unique<module::led>(LED0_GPIO_Port, LED0_Pin);
 		_led1 = std::make_unique<module::led>(LED1_GPIO_Port, LED1_Pin);
 		_led2 = std::make_unique<module::led>(LED2_GPIO_Port, LED2_Pin);
 		_led3 = std::make_unique<module::led>(LED3_GPIO_Port, LED3_Pin);
 	}
 
-	void led_controller::updateTimer(void) {
+	void ledController::update(void) {
 		static uint16_t timer = 0;
 
 		if( _mode == TIMER ) {
@@ -49,19 +49,19 @@ namespace module
 		}
 	}
 
-	void led_controller::lightBinary(uint8_t num) {
+	void ledController::lightBinary(uint8_t num) {
 		_mode      = NORMAL;
 		_interval  = 0;
 		_num       = num;
 	}
 
-	void led_controller::toggleBinary(uint8_t num) {
+	void ledController::toggleBinary(uint8_t num) {
 		_mode      = NORMAL;
 		_interval  = 0;
 		_num      ^= num;
 	}
 
-	void led_controller::flashBinary(uint8_t num, uint16_t ms) {
+	void ledController::flashBinary(uint8_t num, uint16_t ms) {
 		_mode      = TIMER;
 		_interval  = ms;
 		_num       = num;
@@ -69,6 +69,7 @@ namespace module
 }
 
 void LED_HardwareTest(void) {
-	module::led_controller::getInstance().toggleBinary(0x0f);
+	module::ledController::getInstance().toggleBinary(0x0f);
+	module::ledController::getInstance().printCycleTime();
 	module::interrupt::getInstance().wait1ms(500);
 }

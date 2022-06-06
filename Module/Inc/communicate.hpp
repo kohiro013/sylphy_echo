@@ -1,3 +1,6 @@
+#ifndef __communicate_H
+#define __communicate_H
+
 #include <stdio.h>
 #include "main.h"
 #include "usart.h"
@@ -11,3 +14,5 @@ extern "C"
 	uint8_t 	Communicate_ReceiceDMA( void );
 	void 		Communicate_ClearReceiveBuffer( void );
 }
+
+#endif
