@@ -19,7 +19,6 @@ namespace module
 		uint32_t    getGlobalTimer(void) const;
 		int32_t     getDuty(void) const;
 		int32_t     getMaxDuty(void) const;
-		float       getBootTime(void) const;
 		void        wait1ms(uint32_t) const;
 
 	private:
@@ -33,16 +32,13 @@ namespace module
 		volatile uint32_t   _counter;
 		volatile int32_t    _duty;
 		volatile int32_t    _duty_max;
-		volatile float      _boot_time;
 	};
 }
 
 extern "C"
 {
-	void Interrupt_Main(void);
+	void Interrupt_Handler(void);
 	void Interrupt_Initialize(void);
-	void Interrupt_PreProcess(void);
-	void Interrupt_PostProcess(void);
 }
 
 #endif

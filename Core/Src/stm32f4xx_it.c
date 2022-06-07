@@ -46,9 +46,9 @@
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN PFP */
-extern void Interrupt_Main(void);
-extern void Interrupt_PreProcess(void);
-extern void Interrupt_PostProcess(void);
+extern void Interrupt_Handler(void);
+extern void Encoder_Handler(void);
+extern void IMU_Handler(void);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -210,7 +210,7 @@ void DMA1_Stream3_IRQHandler(void)
   /* USER CODE END DMA1_Stream3_IRQn 0 */
 
   /* USER CODE BEGIN DMA1_Stream3_IRQn 1 */
-
+//    IMU_Handler();
   /* USER CODE END DMA1_Stream3_IRQn 1 */
 }
 
@@ -237,12 +237,7 @@ void TIM5_IRQHandler(void)
 
   /* USER CODE END TIM5_IRQn 0 */
   /* USER CODE BEGIN TIM5_IRQn 1 */
-  if(LL_TIM_IsActiveFlag_UPDATE(TIM5)) {
-    LL_TIM_ClearFlag_UPDATE(TIM5);
-    Interrupt_PreProcess();
-    Interrupt_Main();
-    Interrupt_PostProcess();
-  } else;
+    Interrupt_Handler();
   /* USER CODE END TIM5_IRQn 1 */
 }
 
@@ -256,7 +251,7 @@ void DMA2_Stream0_IRQHandler(void)
   /* USER CODE END DMA2_Stream0_IRQn 0 */
 
   /* USER CODE BEGIN DMA2_Stream0_IRQn 1 */
-
+    Encoder_Handler();
   /* USER CODE END DMA2_Stream0_IRQn 1 */
 }
 

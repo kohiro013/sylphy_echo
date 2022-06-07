@@ -16,10 +16,6 @@ namespace module {
 
 		virtual void update(void) = 0;
 
-		virtual void setDeltaT(float delta_t) {
-			_delta_t = delta_t;
-		}
-
 		void cycle(void) {
 			uint32_t start_usec = module::interrupt::getInstance().getElapsedUsec();
 			update();
@@ -54,7 +50,6 @@ namespace module {
 		BaseModule& operator=(const BaseModule&) = delete;
 		BaseModule(BaseModule&&) = delete;
 		BaseModule& operator=(BaseModule&&) = delete;
-
 	};
 }
 

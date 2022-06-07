@@ -1,4 +1,5 @@
 #include "interrupt.hpp"
+#include "encoder.hpp"
 #include "ledController.hpp"
 
 #define HANDLE 		(TIM5)
@@ -12,14 +13,12 @@ namespace module
 		 _global_timer{0},
 		_counter{0},
 		_duty{0},
-		_duty_max{0},
-		_boot_time{0.f}
+		_duty_max{0}
 	{}
 
 	void interrupt::preProcess(void) {
 		_global_timer++;
 		_counter = TIMER_COUNT;
-		_boot_time = static_cast<float>(_global_timer) * 0.001f;
 	}
 
 	void interrupt::postProcess(void) {
@@ -43,10 +42,6 @@ namespace module
 	int32_t interrupt::getMaxDuty(void) const {
 		return _duty_max;
 	}
-	
-	float interrupt::getBootTime(void) const {
-		return _boot_time;
-	}
 
 	void interrupt::wait1ms(uint32_t ms) const {
 		volatile uint32_t tmp_timer = _global_timer;
@@ -54,19 +49,19 @@ namespace module
 	}
 }
 
-void Interrupt_Main(void) {
-	module::ledController::getInstance().cycle();
+void Interrupt_Handler(void) {
+	if(LL_TIM_IsActiveFlag_UPDATE(HANDLE)) {
+    	LL_TIM_ClearFlag_UPDATE(HANDLE);
+		module::interrupt::getInstance().preProcess();
+
+		module::encoder::getInstance().cycle();
+		module::ledController::getInstance().cycle();
+
+		module::interrupt::getInstance().postProcess();
+	} else;
 }
 
 void Interrupt_Initialize(void) {
 	LL_TIM_EnableIT_UPDATE(HANDLE);
 	LL_TIM_EnableCounter(HANDLE);
-}
-
-void Interrupt_PreProcess(void) {
-	module::interrupt::getInstance().preProcess();
-}
-
-void Interrupt_PostProcess(void) {
-	module::interrupt::getInstance().postProcess();
 }

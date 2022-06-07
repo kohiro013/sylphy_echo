@@ -57,11 +57,11 @@ void MX_GPIO_Init(void)
   LL_GPIO_ResetOutputPin(GPIOH, LL_GPIO_PIN_0|LL_GPIO_PIN_1);
 
   /**/
-  LL_GPIO_ResetOutputPin(GPIOA, LL_GPIO_PIN_4|LL_GPIO_PIN_5|LL_GPIO_PIN_6|LL_GPIO_PIN_7
-                          |LL_GPIO_PIN_12|LL_GPIO_PIN_15);
+  LL_GPIO_ResetOutputPin(GPIOA, LL_GPIO_PIN_4|LL_GPIO_PIN_5|LL_GPIO_PIN_6|LL_GPIO_PIN_7);
+  LL_GPIO_SetOutputPin(GPIOA, LL_GPIO_PIN_12|LL_GPIO_PIN_15);
 
   /**/
-  LL_GPIO_ResetOutputPin(GPIOB, LL_GPIO_PIN_12);
+  LL_GPIO_SetOutputPin(GPIOB, LL_GPIO_PIN_12);
 
   /**/
   GPIO_InitStruct.Pin = LL_GPIO_PIN_13;

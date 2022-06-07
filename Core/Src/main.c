@@ -56,6 +56,7 @@ void SystemClock_Config(void);
 /* USER CODE BEGIN PFP */
 extern void Communicate_Initialize(void);
 extern void Interrupt_Initialize(void);
+extern void Encoder_Initialize(void);
 extern void LED_HardwareTest(void);
 /* USER CODE END PFP */
 
@@ -108,6 +109,7 @@ int main(void)
   /* USER CODE BEGIN 2 */
   Communicate_Initialize();
   Interrupt_Initialize();
+  Encoder_Initialize();
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -118,8 +120,8 @@ int main(void)
 
     /* USER CODE BEGIN 3 */
     LED_HardwareTest();
-    printf("Hello World! : %f, %f\r\n", arm_cos_f32(PI), arm_sin_f32(PI));
-    LL_mDelay(500);
+    //printf("Hello World! : %f, %f\r\n", arm_cos_f32(PI), arm_sin_f32(PI));
+    //LL_mDelay(500);
   }
   /* USER CODE END 3 */
 }
