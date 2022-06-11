@@ -57,6 +57,7 @@ void SystemClock_Config(void);
 extern void Communicate_Initialize(void);
 extern void Interrupt_Initialize(void);
 extern void Encoder_Initialize(void);
+extern void IMU_Initialize(void);
 extern void LED_HardwareTest(void);
 /* USER CODE END PFP */
 
@@ -110,6 +111,7 @@ int main(void)
   Communicate_Initialize();
   Interrupt_Initialize();
   Encoder_Initialize();
+  IMU_Initialize();
   /* USER CODE END 2 */
 
   /* Infinite loop */

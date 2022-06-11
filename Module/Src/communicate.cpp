@@ -172,7 +172,6 @@ extern "C" PUTCHAR_PROTOTYPE
 {
 	//Communicate_Transmit1byte(ch);
 	Communicate_TransmitDMA(ch);
-	LL_GPIO_TogglePin(LED3_GPIO_Port, LED3_Pin);
 	return 1;
 }
 

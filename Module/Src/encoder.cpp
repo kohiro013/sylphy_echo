@@ -33,6 +33,7 @@ namespace module
 			LL_SPI_Enable(SPI_HANDLE);
 		} else;
 
+		while(LL_SPI_IsActiveFlag_BSY(SPI_HANDLE) == SET);
 		LL_GPIO_ResetOutputPin(CS_L_PORT, CS_L_PIN);
 		while(LL_SPI_IsActiveFlag_TXE(SPI_HANDLE) == RESET);
 		LL_SPI_TransmitData16(SPI_HANDLE, address);
@@ -41,6 +42,7 @@ namespace module
 		while(LL_SPI_IsActiveFlag_BSY(SPI_HANDLE) == SET);
 		LL_GPIO_SetOutputPin(CS_L_PORT, CS_L_PIN);
 
+		while(LL_SPI_IsActiveFlag_BSY(SPI_HANDLE) == SET);
 		LL_GPIO_ResetOutputPin(CS_R_PORT, CS_R_PIN);
 		while(LL_SPI_IsActiveFlag_TXE(SPI_HANDLE) == RESET);
 		LL_SPI_TransmitData16(SPI_HANDLE, address);
@@ -146,8 +148,6 @@ namespace module
 			// 割り込みフラグのクリア
 			LL_DMA_ClearFlag_TC0(DMA_HANDLE);
 			LL_DMA_ClearFlag_TC3(DMA_HANDLE);
-			LL_DMA_SetDataLength(DMA_HANDLE, RX_STREAM, 1);
-			LL_DMA_SetDataLength(DMA_HANDLE, TX_STREAM, 1);
 
 			if( switching == 0 ) {
 				LL_GPIO_SetOutputPin(CS_L_PORT, CS_L_PIN);

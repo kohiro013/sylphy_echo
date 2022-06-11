@@ -1,5 +1,6 @@
 #include "interrupt.hpp"
 #include "encoder.hpp"
+#include "imu.hpp"
 #include "ledController.hpp"
 
 #define HANDLE 		(TIM5)
@@ -55,6 +56,7 @@ void Interrupt_Handler(void) {
 		module::interrupt::getInstance().preProcess();
 
 		module::encoder::getInstance().cycle();
+		module::imu::getInstance().cycle();
 		module::ledController::getInstance().cycle();
 
 		module::interrupt::getInstance().postProcess();

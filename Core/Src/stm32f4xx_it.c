@@ -210,7 +210,7 @@ void DMA1_Stream3_IRQHandler(void)
   /* USER CODE END DMA1_Stream3_IRQn 0 */
 
   /* USER CODE BEGIN DMA1_Stream3_IRQn 1 */
-//    IMU_Handler();
+    IMU_Handler();
   /* USER CODE END DMA1_Stream3_IRQn 1 */
 }
 
