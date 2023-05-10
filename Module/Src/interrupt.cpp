@@ -1,7 +1,6 @@
 #include "interrupt.hpp"
 #include "encoder.hpp"
 #include "imu.hpp"
-#include "ledController.hpp"
 
 #define HANDLE 		(TIM5)
 #define TIMER_COUNT (LL_TIM_GetCounter(HANDLE))
@@ -57,7 +56,6 @@ void Interrupt_Handler(void) {
 
 		module::encoder::getInstance().cycle();
 		module::imu::getInstance().cycle();
-		module::ledController::getInstance().cycle();
 
 		module::interrupt::getInstance().postProcess();
 	} else;

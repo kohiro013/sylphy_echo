@@ -2,14 +2,14 @@
 #include <stdio.h>
 #include "arm_math.h"
 
-#define SPI_HANDLE 	(SPI1)
-#define DMA_HANDLE	(DMA2)
-#define RX_STREAM	(LL_DMA_STREAM_0)
-#define TX_STREAM	(LL_DMA_STREAM_3)
-#define CS_L_PORT	(SPI1_CS0_GPIO_Port)
-#define CS_R_PORT	(SPI1_CS1_GPIO_Port)
-#define CS_L_PIN	(SPI1_CS0_Pin)
-#define CS_R_PIN	(SPI1_CS1_Pin)
+#define SPI_HANDLE 	(SPI2)
+#define DMA_HANDLE	(DMA1)
+#define RX_STREAM	(LL_DMA_STREAM_3)
+#define TX_STREAM	(LL_DMA_STREAM_4)
+#define CS_L_PORT	(SPI2_CS0_GPIO_Port)
+#define CS_R_PORT	(SPI2_CS1_GPIO_Port)
+#define CS_L_PIN	(SPI2_CS0_Pin)
+#define CS_R_PIN	(SPI2_CS1_Pin)
 
 namespace module
 {
@@ -144,26 +144,20 @@ namespace module
 	void encoder::callback(void) {
 		volatile static int8_t switching = 0;
 
-		if(LL_DMA_IsActiveFlag_TC0(DMA_HANDLE)) {
-			// 割り込みフラグのクリア
-			LL_DMA_ClearFlag_TC0(DMA_HANDLE);
-			LL_DMA_ClearFlag_TC3(DMA_HANDLE);
+		if( switching == 0 ) {
+			LL_GPIO_SetOutputPin(CS_L_PORT, CS_L_PIN);
+			_count_l = (_value>>1)&0x0fff;
+			LL_GPIO_ResetOutputPin(CS_R_PORT, CS_R_PIN);
+		} else {
+			LL_GPIO_SetOutputPin(CS_R_PORT, CS_R_PIN);
+			_count_r = _RESOLUTION - ((_value>>1)&0x0fff);
+			LL_GPIO_ResetOutputPin(CS_L_PORT, CS_L_PIN);
+		}
+		switching ^= 1;	// 左右の切り替え
 
-			if( switching == 0 ) {
-				LL_GPIO_SetOutputPin(CS_L_PORT, CS_L_PIN);
-				_count_l = (_value>>1)&0x0fff;
-				LL_GPIO_ResetOutputPin(CS_R_PORT, CS_R_PIN);
-			} else {
-				LL_GPIO_SetOutputPin(CS_R_PORT, CS_R_PIN);
-				_count_r = _RESOLUTION - ((_value>>1)&0x0fff);
-				LL_GPIO_ResetOutputPin(CS_L_PORT, CS_L_PIN);
-			}
-			switching ^= 1;	// 左右の切り替え
-
-			// 通信再開
-			LL_DMA_EnableStream(DMA_HANDLE, RX_STREAM);
-			LL_DMA_EnableStream(DMA_HANDLE, TX_STREAM);
-		} else;
+		// 通信再開
+		LL_DMA_EnableStream(DMA_HANDLE, RX_STREAM);
+		LL_DMA_EnableStream(DMA_HANDLE, TX_STREAM);
 	}
 
 	void encoder::resetCountLeft(void) {
@@ -192,8 +186,8 @@ namespace module
 
 	void encoder::monitorDebug(void) {
 		while(true) {
-			//printf("%5d, %5d, %8.3f\r\n", _count_l, _count_old_l, _angle_l * 180.f/PI);
-			printf("%5d, %5d, %8.3f\r\n", _count_r, _count_old_r, _angle_r * 180.f/PI);
+			printf("%04x | %5d, %5d, %8.3f | %5d, %5d, %8.3f\r\n", 
+				_value,	_count_l, _count_old_l, _angle_l * 180.f/PI, _count_r, _count_old_r, _angle_r * 180.f/PI);
 			LL_mDelay(100);
 		}
 	}

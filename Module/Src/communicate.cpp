@@ -162,7 +162,6 @@ void Communicate_Initialize( void )
 /* ---------------------------------------------------------------
 	printfを使用するための設定
 --------------------------------------------------------------- */
-
 #ifdef __GNUC__
 #define PUTCHAR_PROTOTYPE int __io_putchar(int ch)
 #else
@@ -170,7 +169,7 @@ void Communicate_Initialize( void )
 #endif /* __GNUC__ */
 extern "C" PUTCHAR_PROTOTYPE
 {
-	//Communicate_Transmit1byte(ch);
+//	Communicate_Transmit1byte(ch);
 	Communicate_TransmitDMA(ch);
 	return 1;
 }

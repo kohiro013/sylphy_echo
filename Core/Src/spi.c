@@ -7,7 +7,7 @@
   ******************************************************************************
   * @attention
   *
-  * Copyright (c) 2022 STMicroelectronics.
+  * Copyright (c) 2023 STMicroelectronics.
   * All rights reserved.
   *
   * This software is licensed under terms that can be found in the LICENSE file
@@ -68,9 +68,9 @@ void MX_SPI1_Init(void)
 
   LL_DMA_SetMemoryIncMode(DMA2, LL_DMA_STREAM_0, LL_DMA_MEMORY_INCREMENT);
 
-  LL_DMA_SetPeriphSize(DMA2, LL_DMA_STREAM_0, LL_DMA_PDATAALIGN_HALFWORD);
+  LL_DMA_SetPeriphSize(DMA2, LL_DMA_STREAM_0, LL_DMA_PDATAALIGN_BYTE);
 
-  LL_DMA_SetMemorySize(DMA2, LL_DMA_STREAM_0, LL_DMA_MDATAALIGN_HALFWORD);
+  LL_DMA_SetMemorySize(DMA2, LL_DMA_STREAM_0, LL_DMA_MDATAALIGN_BYTE);
 
   LL_DMA_DisableFifoMode(DMA2, LL_DMA_STREAM_0);
 
@@ -85,11 +85,11 @@ void MX_SPI1_Init(void)
 
   LL_DMA_SetPeriphIncMode(DMA2, LL_DMA_STREAM_3, LL_DMA_PERIPH_NOINCREMENT);
 
-  LL_DMA_SetMemoryIncMode(DMA2, LL_DMA_STREAM_3, LL_DMA_MEMORY_INCREMENT);
+  LL_DMA_SetMemoryIncMode(DMA2, LL_DMA_STREAM_3, LL_DMA_MEMORY_NOINCREMENT);
 
-  LL_DMA_SetPeriphSize(DMA2, LL_DMA_STREAM_3, LL_DMA_PDATAALIGN_HALFWORD);
+  LL_DMA_SetPeriphSize(DMA2, LL_DMA_STREAM_3, LL_DMA_PDATAALIGN_BYTE);
 
-  LL_DMA_SetMemorySize(DMA2, LL_DMA_STREAM_3, LL_DMA_MDATAALIGN_HALFWORD);
+  LL_DMA_SetMemorySize(DMA2, LL_DMA_STREAM_3, LL_DMA_MDATAALIGN_BYTE);
 
   LL_DMA_DisableFifoMode(DMA2, LL_DMA_STREAM_3);
 
@@ -98,8 +98,8 @@ void MX_SPI1_Init(void)
   /* USER CODE END SPI1_Init 1 */
   SPI_InitStruct.TransferDirection = LL_SPI_FULL_DUPLEX;
   SPI_InitStruct.Mode = LL_SPI_MODE_MASTER;
-  SPI_InitStruct.DataWidth = LL_SPI_DATAWIDTH_16BIT;
-  SPI_InitStruct.ClockPolarity = LL_SPI_POLARITY_LOW;
+  SPI_InitStruct.DataWidth = LL_SPI_DATAWIDTH_8BIT;
+  SPI_InitStruct.ClockPolarity = LL_SPI_POLARITY_HIGH;
   SPI_InitStruct.ClockPhase = LL_SPI_PHASE_2EDGE;
   SPI_InitStruct.NSS = LL_SPI_NSS_SOFT;
   SPI_InitStruct.BaudRate = LL_SPI_BAUDRATEPRESCALER_DIV64;
@@ -157,9 +157,9 @@ void MX_SPI2_Init(void)
 
   LL_DMA_SetMemoryIncMode(DMA1, LL_DMA_STREAM_3, LL_DMA_MEMORY_INCREMENT);
 
-  LL_DMA_SetPeriphSize(DMA1, LL_DMA_STREAM_3, LL_DMA_PDATAALIGN_BYTE);
+  LL_DMA_SetPeriphSize(DMA1, LL_DMA_STREAM_3, LL_DMA_PDATAALIGN_HALFWORD);
 
-  LL_DMA_SetMemorySize(DMA1, LL_DMA_STREAM_3, LL_DMA_MDATAALIGN_BYTE);
+  LL_DMA_SetMemorySize(DMA1, LL_DMA_STREAM_3, LL_DMA_MDATAALIGN_HALFWORD);
 
   LL_DMA_DisableFifoMode(DMA1, LL_DMA_STREAM_3);
 
@@ -176,9 +176,9 @@ void MX_SPI2_Init(void)
 
   LL_DMA_SetMemoryIncMode(DMA1, LL_DMA_STREAM_4, LL_DMA_MEMORY_NOINCREMENT);
 
-  LL_DMA_SetPeriphSize(DMA1, LL_DMA_STREAM_4, LL_DMA_PDATAALIGN_BYTE);
+  LL_DMA_SetPeriphSize(DMA1, LL_DMA_STREAM_4, LL_DMA_PDATAALIGN_HALFWORD);
 
-  LL_DMA_SetMemorySize(DMA1, LL_DMA_STREAM_4, LL_DMA_MDATAALIGN_BYTE);
+  LL_DMA_SetMemorySize(DMA1, LL_DMA_STREAM_4, LL_DMA_MDATAALIGN_HALFWORD);
 
   LL_DMA_DisableFifoMode(DMA1, LL_DMA_STREAM_4);
 
@@ -187,8 +187,8 @@ void MX_SPI2_Init(void)
   /* USER CODE END SPI2_Init 1 */
   SPI_InitStruct.TransferDirection = LL_SPI_FULL_DUPLEX;
   SPI_InitStruct.Mode = LL_SPI_MODE_MASTER;
-  SPI_InitStruct.DataWidth = LL_SPI_DATAWIDTH_8BIT;
-  SPI_InitStruct.ClockPolarity = LL_SPI_POLARITY_HIGH;
+  SPI_InitStruct.DataWidth = LL_SPI_DATAWIDTH_16BIT;
+  SPI_InitStruct.ClockPolarity = LL_SPI_POLARITY_LOW;
   SPI_InitStruct.ClockPhase = LL_SPI_PHASE_2EDGE;
   SPI_InitStruct.NSS = LL_SPI_NSS_SOFT;
   SPI_InitStruct.BaudRate = LL_SPI_BAUDRATEPRESCALER_DIV64;

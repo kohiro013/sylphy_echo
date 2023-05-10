@@ -6,7 +6,7 @@
   ******************************************************************************
   * @attention
   *
-  * Copyright (c) 2022 STMicroelectronics.
+  * Copyright (c) 2023 STMicroelectronics.
   * All rights reserved.
   *
   * This software is licensed under terms that can be found in the LICENSE file
@@ -46,9 +46,7 @@
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN PFP */
-extern void Interrupt_Handler(void);
-extern void Encoder_Handler(void);
-extern void IMU_Handler(void);
+
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -201,6 +199,20 @@ void SysTick_Handler(void)
 /******************************************************************************/
 
 /**
+  * @brief This function handles DMA1 stream2 global interrupt.
+  */
+void DMA1_Stream2_IRQHandler(void)
+{
+  /* USER CODE BEGIN DMA1_Stream2_IRQn 0 */
+
+  /* USER CODE END DMA1_Stream2_IRQn 0 */
+
+  /* USER CODE BEGIN DMA1_Stream2_IRQn 1 */
+
+  /* USER CODE END DMA1_Stream2_IRQn 1 */
+}
+
+/**
   * @brief This function handles DMA1 stream3 global interrupt.
   */
 void DMA1_Stream3_IRQHandler(void)
@@ -210,7 +222,7 @@ void DMA1_Stream3_IRQHandler(void)
   /* USER CODE END DMA1_Stream3_IRQn 0 */
 
   /* USER CODE BEGIN DMA1_Stream3_IRQn 1 */
-    IMU_Handler();
+
   /* USER CODE END DMA1_Stream3_IRQn 1 */
 }
 
@@ -237,7 +249,7 @@ void TIM5_IRQHandler(void)
 
   /* USER CODE END TIM5_IRQn 0 */
   /* USER CODE BEGIN TIM5_IRQn 1 */
-    Interrupt_Handler();
+
   /* USER CODE END TIM5_IRQn 1 */
 }
 
@@ -251,7 +263,7 @@ void DMA2_Stream0_IRQHandler(void)
   /* USER CODE END DMA2_Stream0_IRQn 0 */
 
   /* USER CODE BEGIN DMA2_Stream0_IRQn 1 */
-    Encoder_Handler();
+
   /* USER CODE END DMA2_Stream0_IRQn 1 */
 }
 

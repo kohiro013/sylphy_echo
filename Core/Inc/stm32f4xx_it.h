@@ -6,7 +6,7 @@
   ******************************************************************************
   * @attention
   *
-  * Copyright (c) 2022 STMicroelectronics.
+  * Copyright (c) 2023 STMicroelectronics.
   * All rights reserved.
   *
   * This software is licensed under terms that can be found in the LICENSE file
@@ -55,6 +55,7 @@ void SVC_Handler(void);
 void DebugMon_Handler(void);
 void PendSV_Handler(void);
 void SysTick_Handler(void);
+void DMA1_Stream2_IRQHandler(void);
 void DMA1_Stream3_IRQHandler(void);
 void DMA1_Stream4_IRQHandler(void);
 void TIM5_IRQHandler(void);

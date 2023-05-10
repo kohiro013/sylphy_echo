@@ -27,23 +27,23 @@ namespace module
 		imu();
 		friend class BaseModule<imu>;
 
-		const uint8_t	_ADDRESS;
+		const uint8_t		_ADDRESS;
 		volatile uint8_t 	_value[13];
 
 		volatile uint16_t	_accel_x_value;
-		volatile int16_t 	_accel_x_reference;
+		volatile int32_t 	_accel_x_reference;
 		volatile float 		_accel_x;
 
 		volatile uint16_t	_accel_y_value;
-		volatile int16_t 	_accel_y_reference;
+		volatile int32_t 	_accel_y_reference;
 		volatile float 		_accel_y;
 
 		volatile uint16_t	_accel_z_value;
-		volatile int16_t 	_accel_z_reference;
+		volatile int32_t 	_accel_z_reference;
 		volatile float 		_accel_z;
 
 		volatile uint16_t	_gyro_z_value;
-		volatile int16_t 	_gyro_z_reference;
+		volatile int32_t 	_gyro_z_reference;
 		volatile float 		_gyro_z;
 		volatile float 		_angle_z;
 

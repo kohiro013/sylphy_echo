@@ -2,14 +2,13 @@
 #include "lsm6dsrx_reg.h"
 #include <stdio.h>
 #include "arm_math.h"
-#include "ledController.hpp"
 
-#define SPI_HANDLE 	(SPI2)
-#define DMA_HANDLE	(DMA1)
-#define RX_STREAM	(LL_DMA_STREAM_3)
-#define TX_STREAM	(LL_DMA_STREAM_4)
-#define CS_PORT		(SPI2_CS0_GPIO_Port)
-#define CS_PIN		(SPI2_CS0_Pin)
+#define SPI_HANDLE 	(SPI1)
+#define DMA_HANDLE	(DMA2)
+#define RX_STREAM	(LL_DMA_STREAM_0)
+#define TX_STREAM	(LL_DMA_STREAM_3)
+#define CS_PORT		(SPI1_CS0_GPIO_Port)
+#define CS_PIN		(SPI1_CS0_Pin)
 
 namespace {
 	const uint16_t 	NUM_REFERENCE = 1000;
@@ -109,10 +108,8 @@ namespace module
 		// 加速度計の設定
 		imu::write1byte(LSM6DSRX_CTRL1_XL, 0xae);	// 加速度計のスケールを±8gに設定
 		LL_mDelay(1);								// 加速度計の出力データレートを416Hzに設定
-		imu::write1byte(LSM6DSRX_CTRL8_XL, 0x80);	// 加速度計のLPFを100Hzに設定
+		imu::write1byte(LSM6DSRX_CTRL8_XL, 0xc0);	// 加速度計のLPFを6.66kHz/400に設定
 		LL_mDelay(1);
-		printf("0x%02x\r\n", imu::read1byte(LSM6DSRX_CTRL8_XL));
-
 
 		// ジャイロの設定
 		imu::write1byte(LSM6DSRX_CTRL2_G, 0xad);	// ジャイロのスケールを±4000deg/sに設定
@@ -129,14 +126,12 @@ namespace module
 		LL_DMA_ConfigAddresses(DMA_HANDLE, RX_STREAM, LL_SPI_DMA_GetRegAddr(SPI_HANDLE),
 			(uint32_t)_value, LL_DMA_GetDataTransferDirection(DMA_HANDLE, RX_STREAM));
 		LL_DMA_SetDataLength(DMA_HANDLE, RX_STREAM, sizeof(_value)/sizeof(_value[0]));
-		LL_DMA_ClearFlag_TC3(DMA_HANDLE);
 
 		// 送信DMA動作設定
 		LL_DMA_DisableStream(DMA_HANDLE, TX_STREAM);
 		LL_DMA_ConfigAddresses(DMA_HANDLE, TX_STREAM, (uint32_t)(&_ADDRESS),
 			LL_SPI_DMA_GetRegAddr(SPI_HANDLE), LL_DMA_GetDataTransferDirection(DMA_HANDLE, TX_STREAM));
 		LL_DMA_SetDataLength(DMA_HANDLE, TX_STREAM, sizeof(_value)/sizeof(_value[0]));
-		LL_DMA_ClearFlag_TC4(DMA_HANDLE);
 
 		// DMAの開始
 		LL_SPI_Enable(SPI_HANDLE);
@@ -144,35 +139,29 @@ namespace module
 	}
 
 	void imu::callback(void) {
-		if(LL_DMA_IsActiveFlag_TC3(DMA_HANDLE)){
-			// 割り込みフラグのクリア
-			LL_DMA_ClearFlag_TC3(DMA_HANDLE);
-			LL_DMA_ClearFlag_TC4(DMA_HANDLE);
+		LL_GPIO_SetOutputPin(CS_PORT, CS_PIN);
+		_accel_x_value = (((uint16_t)_value[10]<<8) | ((uint16_t)_value[ 9]&0x00ff));
+		_accel_y_value = (((uint16_t)_value[ 8]<<8) | ((uint16_t)_value[ 7]&0x00ff));
+		_accel_z_value = (((uint16_t)_value[12]<<8) | ((uint16_t)_value[11]&0x00ff));
+		_gyro_z_value =  (((uint16_t)_value[ 6]<<8) | ((uint16_t)_value[ 5]&0x00ff));
 
-			LL_GPIO_SetOutputPin(CS_PORT, CS_PIN);
-			_accel_x_value = (((uint16_t)_value[10]<<8) | ((uint16_t)_value[ 9]&0x00ff));
-			_accel_y_value = (((uint16_t)_value[ 8]<<8) | ((uint16_t)_value[ 7]&0x00ff));
-			_accel_z_value = (((uint16_t)_value[12]<<8) | ((uint16_t)_value[11]&0x00ff));
-			_gyro_z_value =  (((uint16_t)_value[ 6]<<8) | ((uint16_t)_value[ 5]&0x00ff));
-
-			// 通信再開
-			imu::startDMA();
-		} else;
+		// 通信再開
+		imu::startDMA();
 	}
 
 	void imu::update(void) {
-		_accel_x = SIGN_ACCEL_X * ((int16_t)_accel_x_value - _accel_x_reference) * SENSITIVITY_ACEEL;
-		_accel_y = SIGN_ACCEL_Y * ((int16_t)_accel_y_value - _accel_y_reference) * SENSITIVITY_ACEEL;
-		_accel_z = SIGN_ACCEL_Z * ((int16_t)_accel_z_value - _accel_z_reference) * SENSITIVITY_ACEEL;
-		_gyro_z	= SIGN_GYRO_Z * PI/180.f * (((int16_t)_gyro_z_value - _gyro_z_reference) * SENSITIVITY_GYRO);
+		_accel_x = SIGN_ACCEL_X * ((int32_t)_accel_x_value - _accel_x_reference) * SENSITIVITY_ACEEL;
+		_accel_y = SIGN_ACCEL_Y * ((int32_t)_accel_y_value - _accel_y_reference) * SENSITIVITY_ACEEL;
+		_accel_z = SIGN_ACCEL_Z * ((int32_t)_accel_z_value - _accel_z_reference) * SENSITIVITY_ACEEL;
+		_gyro_z	= SIGN_GYRO_Z * PI/180.f * (((int32_t)_gyro_z_value - _gyro_z_reference) * SENSITIVITY_GYRO);
 		_angle_z += _gyro_z * _delta_t;
 	}
 
 	void imu::resetReference(void) {
 		for(int16_t i = 0; i < NUM_REFERENCE; i++) {
 			LL_mDelay(1);
-			_accel_x_reference += (int16_t)_accel_x_value;
-			_gyro_z_reference += (int16_t)_gyro_z_value;
+			_accel_x_reference += (int32_t)_accel_x_value;
+			_gyro_z_reference += (int32_t)_gyro_z_value;
 		}
 		_accel_x_reference /= NUM_REFERENCE;
 		_gyro_z_reference /= NUM_REFERENCE;
@@ -200,7 +189,7 @@ namespace module
 
 	void imu::monitorDebug(void) {
 		while(1) {
-			printf("%04x, %6d, %6d, %7.3f\t| %04x, %6d, %6d, %7.3f\t| %04x, %6d, %6d, %7.3f\t| %04x, %6d, %6d, %7.3f\r\n",
+			printf("%04x, %6d, %6ld, %7.3f\t| %04x, %6d, %6ld, %7.3f\t| %04x, %6d, %6ld, %7.3f\t| %04x, %6d, %6ld, %7.3f\r\n",
 					_accel_x_value, (int16_t)_accel_x_value, _accel_x_reference, _accel_x,
 					_accel_y_value, (int16_t)_accel_y_value, _accel_y_reference, _accel_y,
 					_accel_z_value, (int16_t)_accel_z_value, _accel_z_reference, _accel_z,

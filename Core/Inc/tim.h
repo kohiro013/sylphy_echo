@@ -7,7 +7,7 @@
   ******************************************************************************
   * @attention
   *
-  * Copyright (c) 2022 STMicroelectronics.
+  * Copyright (c) 2023 STMicroelectronics.
   * All rights reserved.
   *
   * This software is licensed under terms that can be found in the LICENSE file
@@ -38,6 +38,7 @@ extern "C" {
 
 void MX_TIM1_Init(void);
 void MX_TIM2_Init(void);
+void MX_TIM3_Init(void);
 void MX_TIM4_Init(void);
 void MX_TIM5_Init(void);
 

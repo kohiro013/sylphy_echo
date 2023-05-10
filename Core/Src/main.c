@@ -6,7 +6,7 @@
   ******************************************************************************
   * @attention
   *
-  * Copyright (c) 2022 STMicroelectronics.
+  * Copyright (c) 2023 STMicroelectronics.
   * All rights reserved.
   *
   * This software is licensed under terms that can be found in the LICENSE file
@@ -55,10 +55,6 @@
 void SystemClock_Config(void);
 /* USER CODE BEGIN PFP */
 extern void Communicate_Initialize(void);
-extern void Interrupt_Initialize(void);
-extern void Encoder_Initialize(void);
-extern void IMU_Initialize(void);
-extern void LED_HardwareTest(void);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -100,18 +96,16 @@ int main(void)
   MX_GPIO_Init();
   MX_DMA_Init();
   MX_USART1_UART_Init();
+  MX_ADC1_Init();
   MX_TIM1_Init();
   MX_TIM2_Init();
+  MX_TIM3_Init();
   MX_TIM4_Init();
   MX_TIM5_Init();
-  MX_ADC1_Init();
   MX_SPI1_Init();
   MX_SPI2_Init();
   /* USER CODE BEGIN 2 */
-  Communicate_Initialize();
-  Interrupt_Initialize();
-  Encoder_Initialize();
-  IMU_Initialize();
+	Communicate_Initialize();
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -121,9 +115,8 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-    LED_HardwareTest();
-    //printf("Hello World! : %f, %f\r\n", arm_cos_f32(PI), arm_sin_f32(PI));
-    //LL_mDelay(500);
+	printf("Hello World! : %f, %f\r\n", arm_cos_f32(PI), arm_sin_f32(PI));
+	LL_mDelay(500);
   }
   /* USER CODE END 3 */
 }

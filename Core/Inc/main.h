@@ -7,7 +7,7 @@
   ******************************************************************************
   * @attention
   *
-  * Copyright (c) 2022 STMicroelectronics.
+  * Copyright (c) 2023 STMicroelectronics.
   * All rights reserved.
   *
   * This software is licensed under terms that can be found in the LICENSE file
@@ -76,14 +76,10 @@ void Error_Handler(void);
 /* Private defines -----------------------------------------------------------*/
 #define SWITCH_Pin LL_GPIO_PIN_13
 #define SWITCH_GPIO_Port GPIOC
-#define LED0_Pin LL_GPIO_PIN_14
-#define LED0_GPIO_Port GPIOC
-#define LED1_Pin LL_GPIO_PIN_15
-#define LED1_GPIO_Port GPIOC
-#define LED2_Pin LL_GPIO_PIN_0
-#define LED2_GPIO_Port GPIOH
-#define LED3_Pin LL_GPIO_PIN_1
-#define LED3_GPIO_Port GPIOH
+#define LED0_Pin LL_GPIO_PIN_0
+#define LED0_GPIO_Port GPIOH
+#define LED1_Pin LL_GPIO_PIN_1
+#define LED1_GPIO_Port GPIOH
 #define LED_FL_Pin LL_GPIO_PIN_4
 #define LED_FL_GPIO_Port GPIOA
 #define LED_SL_Pin LL_GPIO_PIN_5
@@ -92,10 +88,10 @@ void Error_Handler(void);
 #define LED_SR_GPIO_Port GPIOA
 #define LED_FR_Pin LL_GPIO_PIN_7
 #define LED_FR_GPIO_Port GPIOA
-#define SPI2_CS0_Pin LL_GPIO_PIN_12
-#define SPI2_CS0_GPIO_Port GPIOB
-#define SPI1_CS1_Pin LL_GPIO_PIN_12
-#define SPI1_CS1_GPIO_Port GPIOA
+#define SPI2_CS1_Pin LL_GPIO_PIN_12
+#define SPI2_CS1_GPIO_Port GPIOB
+#define SPI2_CS0_Pin LL_GPIO_PIN_8
+#define SPI2_CS0_GPIO_Port GPIOA
 #define SPI1_CS0_Pin LL_GPIO_PIN_15
 #define SPI1_CS0_GPIO_Port GPIOA
 #ifndef NVIC_PRIORITYGROUP_0
