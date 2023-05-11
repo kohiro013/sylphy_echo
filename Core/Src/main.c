@@ -28,7 +28,6 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include <stdio.h>
-#include "arm_math.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -55,6 +54,8 @@
 void SystemClock_Config(void);
 /* USER CODE BEGIN PFP */
 extern void Communicate_Initialize(void);
+extern void Myshell_Initialize(void);
+extern void Myshell_Execute(void);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -106,6 +107,7 @@ int main(void)
   MX_SPI2_Init();
   /* USER CODE BEGIN 2 */
 	Communicate_Initialize();
+	Myshell_Initialize();
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -115,8 +117,7 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-	printf("Hello World! : %f, %f\r\n", arm_cos_f32(PI), arm_sin_f32(PI));
-	LL_mDelay(500);
+	Myshell_Execute();
   }
   /* USER CODE END 3 */
 }
