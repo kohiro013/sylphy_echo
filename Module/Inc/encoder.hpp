@@ -5,6 +5,7 @@
 #include "dma.h"
 #include "spi.h"
 #include "baseModule.hpp"
+#include "communicate.hpp"
 
 namespace module
 {
@@ -13,8 +14,6 @@ namespace module
 	public:
 		void update(void) override;
 		void callback(void);
-		void write2byte(uint16_t, uint16_t);
-		uint16_t read2byte(uint16_t, int8_t);
 		void initialize(void);
 		void resetCountLeft(void);
 		void resetCountRight(void);
@@ -34,13 +33,16 @@ namespace module
 		volatile uint16_t	_count_l, _count_r;
 		volatile uint16_t 	_count_old_l, _count_old_r;
 		volatile float 		_angle_l, _angle_r;
+
+		void write2byte(uint16_t, uint16_t);
+		uint16_t read2byte(uint16_t, int8_t);
 	};
 }
 
 extern "C"
 {
 	void Encoder_Initialize(void);
-	void Encoder_Handler(void);
+	void Encoder_Callback(void);
 }
 
 #endif

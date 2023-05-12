@@ -13,13 +13,21 @@
 namespace {
 	const uint16_t 	NUM_REFERENCE = 1000;
 
-	const float 	SIGN_ACCEL_X = -1.f;
-	const float 	SIGN_ACCEL_Y = -1.f;
-	const float 	SIGN_ACCEL_Z = 1.f;
-	const float 	SENSITIVITY_ACEEL = 9.80665f * 0.244f/1000.f;
+	const float 	SIGN_ACCEL_X = 1.f;
+	const float 	SIGN_ACCEL_Y = 1.f;
+	const float 	SIGN_ACCEL_Z = -1.f;
+	const float 	SENSITIVITY_ACEEL = 9.80665f * 0.244f;
 
 	const float 	SIGN_GYRO_Z = 1.f;
-	const float 	SENSITIVITY_GYRO = 0.1383f;
+	const float 	SENSITIVITY_GYRO = 0.1373f;
+}
+
+void IMU_Initialize(void) {
+	module::imu::getInstance().initialize();
+}
+
+void IMU_Callback(void) {
+	module::imu::getInstance().callback();
 }
 
 namespace module
@@ -188,21 +196,14 @@ namespace module
 	}
 
 	void imu::monitorDebug(void) {
-		while(1) {
+		_angle_z = 0.f;
+		while(Communicate_ReceiceDMA() != 0x1b) {
 			printf("%04x, %6d, %6ld, %7.3f\t| %04x, %6d, %6ld, %7.3f\t| %04x, %6d, %6ld, %7.3f\t| %04x, %6d, %6ld, %7.3f\r\n",
-					_accel_x_value, (int16_t)_accel_x_value, _accel_x_reference, _accel_x,
-					_accel_y_value, (int16_t)_accel_y_value, _accel_y_reference, _accel_y,
-					_accel_z_value, (int16_t)_accel_z_value, _accel_z_reference, _accel_z,
+					_accel_x_value, (int16_t)_accel_x_value, _accel_x_reference, _accel_x/1000.f,
+					_accel_y_value, (int16_t)_accel_y_value, _accel_y_reference, _accel_y/1000.f,
+					_accel_z_value, (int16_t)_accel_z_value, _accel_z_reference, _accel_z/1000.f,
 					_gyro_z_value,  (int16_t)_gyro_z_value,  _gyro_z_reference,  _gyro_z);
 			LL_mDelay(100);
 		}
 	}
-}
-
-void IMU_Initialize(void) {
-	module::imu::getInstance().initialize();
-}
-
-void IMU_Handler(void) {
-	module::imu::getInstance().callback();
 }

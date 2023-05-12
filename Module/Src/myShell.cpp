@@ -5,9 +5,9 @@
 // シェルコマンド関数郡
 static int usrcmd_help(int argc, char **argv);
 static int usrcmd_info(int argc, char **argv);
-/*static int usrcmd_imu(int argc, char **argv);
+static int usrcmd_imu(int argc, char **argv);
 static int usrcmd_encoder(int argc, char **argv);
-static int usrcmd_sensor(int argc, char **argv);
+/*static int usrcmd_sensor(int argc, char **argv);
 static int usrcmd_module_test(int argc, char **argv);
 static int usrcmd_fan(int argc, char **argv);
 static int usrcmd_maze(int argc, char **argv);
@@ -33,9 +33,9 @@ typedef struct {
 static const cmd_table_t cmdlist[] = {
 	{ "help", 			"help command.", 		usrcmd_help 		},
 	{ "info", 			"system info.", 		usrcmd_info 		},
-/*	{ "imu", 			"IMU debug.",			usrcmd_imu			},
+	{ "imu", 			"IMU debug.",			usrcmd_imu			},
 	{ "encoder", 		"Encoder debug.",		usrcmd_encoder		},
-	{ "ir_sensor", 		"IR sensor debug.",		usrcmd_sensor		},
+/*	{ "ir_sensor", 		"IR sensor debug.",		usrcmd_sensor		},
 	{ "fan",			"suction fan test.",	usrcmd_fan			},
 	{ "module_test", 	"module test command.", usrcmd_module_test 	},
 	{ "maze",			"maze display.",		usrcmd_maze			},
@@ -48,20 +48,19 @@ static ntshell_t nts;
 /* ---------------------------------------------------------------
 	各ラップ関数
 --------------------------------------------------------------- */
-/*
 static int usrcmd_imu(int argc, char **argv)
 {
-	IMU_ResetReference();
-	IMU_DebugPrintf();
+	module::imu::getInstance().resetReference();
+	module::imu::getInstance().monitorDebug();
 	return 0;
 }
 
 static int usrcmd_encoder(int argc, char **argv)
 {
-	Encoder_DebugPrintf();
+	module::encoder::getInstance().monitorDebug();
 	return 0;
 }
-
+/*
 static int usrcmd_sensor(int argc, char **argv)
 {
 	if(argc != 2) {
@@ -171,7 +170,7 @@ static int usrcmd_loss_torque(int argc, char **argv)
 static int usrcmd_help(int argc, char **argv)
 {
 	const cmd_table_t *p = &cmdlist[0];
-	for(int i = 0; i < sizeof(cmdlist) / sizeof(cmdlist[0]); i++) {
+	for(unsigned int i = 0; i < sizeof(cmdlist) / sizeof(cmdlist[0]); i++) {
 		printf("  %s", p->cmd);
 		uint8_t space_num = 16 - strlen(p->cmd);
 		if( space_num > 0 ) {
@@ -241,7 +240,7 @@ static int usrcmd_ntopt_callback(int argc, char **argv, void *extobj)
 		return 0;
 	}
 	const cmd_table_t *p = &cmdlist[0];
-	for (int i = 0; i < sizeof(cmdlist) / sizeof(cmdlist[0]); i++) {
+	for (unsigned int i = 0; i < sizeof(cmdlist) / sizeof(cmdlist[0]); i++) {
 		if (ntlibc_strcmp((const char *)argv[0], p->cmd) == 0) {
 //			LED_LightBinary(0x00, 0);
 //			Motor_StopPWM();

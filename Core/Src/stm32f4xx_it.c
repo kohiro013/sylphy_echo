@@ -47,6 +47,15 @@
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN PFP */
 
+// 割り込み処理を記述した関数群
+extern void Interrupt_Main( void );
+extern void Interrupt_PreProcess( void );
+extern void Interrupt_PostProcess( void );
+
+// DMA完了後のコールバック関数
+extern void IMU_Callback( void );
+extern void Encoder_Callback( void );
+
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -218,7 +227,13 @@ void DMA1_Stream2_IRQHandler(void)
 void DMA1_Stream3_IRQHandler(void)
 {
   /* USER CODE BEGIN DMA1_Stream3_IRQn 0 */
-
+	if(LL_DMA_IsActiveFlag_TC3(DMA1)){
+		// 割り込みフラグのクリア
+		LL_DMA_ClearFlag_TC3(DMA1);
+		LL_DMA_ClearFlag_TC4(DMA1);
+		// コールバック関数
+		Encoder_Callback();
+	} else;
   /* USER CODE END DMA1_Stream3_IRQn 0 */
 
   /* USER CODE BEGIN DMA1_Stream3_IRQn 1 */
@@ -246,7 +261,13 @@ void DMA1_Stream4_IRQHandler(void)
 void TIM5_IRQHandler(void)
 {
   /* USER CODE BEGIN TIM5_IRQn 0 */
-
+	if( LL_TIM_IsActiveFlag_UPDATE(TIM5) ){
+		LL_TIM_ClearFlag_UPDATE(TIM5);
+		// 割り込み内部の処理
+//		Interrupt_PreProcess();
+//		Interrupt_Main();
+//		Interrupt_PostProcess();
+	} else;
   /* USER CODE END TIM5_IRQn 0 */
   /* USER CODE BEGIN TIM5_IRQn 1 */
 
@@ -259,7 +280,13 @@ void TIM5_IRQHandler(void)
 void DMA2_Stream0_IRQHandler(void)
 {
   /* USER CODE BEGIN DMA2_Stream0_IRQn 0 */
-
+	if(LL_DMA_IsActiveFlag_TC0(DMA2)){
+		// 割り込みフラグのクリア
+		LL_DMA_ClearFlag_TC0(DMA2);
+		LL_DMA_ClearFlag_TC3(DMA2);
+		// コールバック関数
+		IMU_Callback();
+	} else;
   /* USER CODE END DMA2_Stream0_IRQn 0 */
 
   /* USER CODE BEGIN DMA2_Stream0_IRQn 1 */

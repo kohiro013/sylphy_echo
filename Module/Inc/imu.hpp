@@ -5,6 +5,7 @@
 #include "dma.h"
 #include "spi.h"
 #include "baseModule.hpp"
+#include "communicate.hpp"
 
 namespace module
 {
@@ -57,7 +58,7 @@ namespace module
 extern "C"
 {
 	void IMU_Initialize(void);
-	void IMU_Handler(void);
+	void IMU_Callback(void);
 }
 
 #endif

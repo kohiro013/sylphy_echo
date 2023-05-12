@@ -11,6 +11,14 @@
 #define CS_L_PIN	(SPI2_CS0_Pin)
 #define CS_R_PIN	(SPI2_CS1_Pin)
 
+void Encoder_Initialize(void) {
+	module::encoder::getInstance().initialize();
+}
+
+void Encoder_Callback(void) {
+	module::encoder::getInstance().callback();
+}
+
 namespace module
 {
 	encoder::encoder():
@@ -101,14 +109,12 @@ namespace module
 		LL_DMA_ConfigAddresses(DMA_HANDLE, RX_STREAM, LL_SPI_DMA_GetRegAddr(SPI_HANDLE),
 			(uint32_t)(&_value), LL_DMA_GetDataTransferDirection(DMA_HANDLE, RX_STREAM));
 		LL_DMA_SetDataLength(DMA_HANDLE, RX_STREAM, 1);
-		LL_DMA_ClearFlag_TC0(DMA_HANDLE);
 
 		// 送信DMA動作設定
 		LL_DMA_DisableStream(DMA_HANDLE, TX_STREAM);
 		LL_DMA_ConfigAddresses(DMA_HANDLE, TX_STREAM, (uint32_t)(&_address),
 			LL_SPI_DMA_GetRegAddr(SPI_HANDLE), LL_DMA_GetDataTransferDirection(DMA_HANDLE, TX_STREAM));
 		LL_DMA_SetDataLength(DMA_HANDLE, TX_STREAM, 1);
-		LL_DMA_ClearFlag_TC3(DMA_HANDLE);
 
 		// DMAの開始
 		LL_SPI_Enable(SPI_HANDLE);
@@ -146,11 +152,11 @@ namespace module
 
 		if( switching == 0 ) {
 			LL_GPIO_SetOutputPin(CS_L_PORT, CS_L_PIN);
-			_count_l = (_value>>1)&0x0fff;
+			_count_l = (_value>>2)&0x0fff;
 			LL_GPIO_ResetOutputPin(CS_R_PORT, CS_R_PIN);
 		} else {
 			LL_GPIO_SetOutputPin(CS_R_PORT, CS_R_PIN);
-			_count_r = _RESOLUTION - ((_value>>1)&0x0fff);
+			_count_r = _RESOLUTION - ((_value>>2)&0x0fff);
 			LL_GPIO_ResetOutputPin(CS_L_PORT, CS_L_PIN);
 		}
 		switching ^= 1;	// 左右の切り替え
@@ -185,18 +191,10 @@ namespace module
 	}
 
 	void encoder::monitorDebug(void) {
-		while(true) {
+		while(Communicate_ReceiceDMA() != 0x1b) {
 			printf("%04x | %5d, %5d, %8.3f | %5d, %5d, %8.3f\r\n", 
 				_value,	_count_l, _count_old_l, _angle_l * 180.f/PI, _count_r, _count_old_r, _angle_r * 180.f/PI);
 			LL_mDelay(100);
 		}
 	}
-}
-
-void Encoder_Initialize(void) {
-	module::encoder::getInstance().initialize();
-}
-
-void Encoder_Handler(void) {
-	module::encoder::getInstance().callback();
 }
