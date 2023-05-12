@@ -35,6 +35,7 @@ namespace module
 	void encoder::write2byte(uint16_t addr, uint16_t data) {
 		uint16_t address = (addr<<1) | 0x7fff;
 		address |= __builtin_parity(address);
+		data    |= __builtin_parity(data);
 
 		// SPIが無効化されている場合有効化する
 		if(LL_SPI_IsEnabled(SPI_HANDLE) == RESET) {
@@ -61,38 +62,6 @@ namespace module
 
 		// SPIの無効化
 		LL_SPI_Disable(SPI_HANDLE);
-	}
-
-	uint16_t encoder::read2byte(uint16_t addr, int8_t direction) {
-		uint16_t address = (addr<<1) | 0x8000;
-		address |= __builtin_parity(address);
-
-		// SPIが無効化されている場合有効化する
-		if(LL_SPI_IsEnabled(SPI_HANDLE) == RESET) {
-			LL_SPI_Enable(SPI_HANDLE);
-		} else;
-
-		if(direction == 0) {
-			LL_GPIO_ResetOutputPin(CS_L_PORT, CS_L_PIN);
-		} else {
-			LL_GPIO_ResetOutputPin(CS_R_PORT, CS_R_PIN);
-		}
-		
-		while(LL_SPI_IsActiveFlag_TXE(SPI_HANDLE) == RESET);
-		LL_SPI_TransmitData16(SPI_HANDLE, address);
-		while(LL_SPI_IsActiveFlag_RXNE(SPI_HANDLE) == RESET);
-		uint16_t data = LL_SPI_ReceiveData16(SPI_HANDLE);
-		while(LL_SPI_IsActiveFlag_BSY(SPI_HANDLE) == SET);
-
-		if(direction == 0) {
-			LL_GPIO_SetOutputPin(CS_L_PORT, CS_L_PIN);
-		} else {
-			LL_GPIO_SetOutputPin(CS_R_PORT, CS_R_PIN);
-		}
-		// SPIの無効化
-		LL_SPI_Disable(SPI_HANDLE);
-
-		return data;
 	}
 
 	void encoder::initialize(void) {

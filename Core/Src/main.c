@@ -55,6 +55,7 @@ void SystemClock_Config(void);
 /* USER CODE BEGIN PFP */
 extern void Communicate_Initialize(void);
 extern void Myshell_Initialize(void);
+extern void Interrupt_Initialize(void);
 extern void IMU_Initialize(void);
 extern void Encoder_Initialize(void);
 extern void Myshell_Execute(void);
@@ -110,6 +111,7 @@ int main(void)
   /* USER CODE BEGIN 2 */
 	Communicate_Initialize();
 	Myshell_Initialize();
+	Interrupt_Initialize();
 	IMU_Initialize();
 	Encoder_Initialize();
   /* USER CODE END 2 */

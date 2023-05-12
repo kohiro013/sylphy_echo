@@ -48,9 +48,7 @@
 /* USER CODE BEGIN PFP */
 
 // 割り込み処理を記述した関数群
-extern void Interrupt_Main( void );
-extern void Interrupt_PreProcess( void );
-extern void Interrupt_PostProcess( void );
+extern void Interrupt_Handler( void );
 
 // DMA完了後のコールバック関数
 extern void IMU_Callback( void );
@@ -264,9 +262,7 @@ void TIM5_IRQHandler(void)
 	if( LL_TIM_IsActiveFlag_UPDATE(TIM5) ){
 		LL_TIM_ClearFlag_UPDATE(TIM5);
 		// 割り込み内部の処理
-//		Interrupt_PreProcess();
-//		Interrupt_Main();
-//		Interrupt_PostProcess();
+		Interrupt_Handler();
 	} else;
   /* USER CODE END TIM5_IRQn 0 */
   /* USER CODE BEGIN TIM5_IRQn 1 */

@@ -7,6 +7,20 @@
 #define TIMER_LOAD	(LL_TIM_GetAutoReload(HANDLE) + 1)
 #define TIMER_PSC 	(LL_TIM_GetPrescaler(HANDLE) + 1)
 
+void Interrupt_Handler(void) {
+	module::interrupt::getInstance().preProcess();
+
+	module::encoder::getInstance().cycle();
+	module::imu::getInstance().cycle();
+
+	module::interrupt::getInstance().postProcess();
+}
+
+void Interrupt_Initialize(void) {
+	LL_TIM_EnableIT_UPDATE(HANDLE);
+	LL_TIM_EnableCounter(HANDLE);
+}
+
 namespace module
 {
 	interrupt::interrupt():
@@ -47,21 +61,4 @@ namespace module
 		volatile uint32_t tmp_timer = _global_timer;
 		while(_global_timer - tmp_timer < ms);
 	}
-}
-
-void Interrupt_Handler(void) {
-	if(LL_TIM_IsActiveFlag_UPDATE(HANDLE)) {
-    	LL_TIM_ClearFlag_UPDATE(HANDLE);
-		module::interrupt::getInstance().preProcess();
-
-		module::encoder::getInstance().cycle();
-		module::imu::getInstance().cycle();
-
-		module::interrupt::getInstance().postProcess();
-	} else;
-}
-
-void Interrupt_Initialize(void) {
-	LL_TIM_EnableIT_UPDATE(HANDLE);
-	LL_TIM_EnableCounter(HANDLE);
 }

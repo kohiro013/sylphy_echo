@@ -158,20 +158,24 @@ namespace module
 	}
 
 	void imu::update(void) {
-		_accel_x = SIGN_ACCEL_X * ((int32_t)_accel_x_value - _accel_x_reference) * SENSITIVITY_ACEEL;
-		_accel_y = SIGN_ACCEL_Y * ((int32_t)_accel_y_value - _accel_y_reference) * SENSITIVITY_ACEEL;
-		_accel_z = SIGN_ACCEL_Z * ((int32_t)_accel_z_value - _accel_z_reference) * SENSITIVITY_ACEEL;
-		_gyro_z	= SIGN_GYRO_Z * PI/180.f * (((int32_t)_gyro_z_value - _gyro_z_reference) * SENSITIVITY_GYRO);
+		_accel_x = SIGN_ACCEL_X * ((int16_t)_accel_x_value - _accel_x_reference) * SENSITIVITY_ACEEL;
+		_accel_y = SIGN_ACCEL_Y * ((int16_t)_accel_y_value - _accel_y_reference) * SENSITIVITY_ACEEL;
+		_accel_z = SIGN_ACCEL_Z * ((int16_t)_accel_z_value - _accel_z_reference) * SENSITIVITY_ACEEL;
+		_gyro_z	= SIGN_GYRO_Z * PI/180.f * (((int16_t)_gyro_z_value - _gyro_z_reference) * SENSITIVITY_GYRO);
 		_angle_z += _gyro_z * _delta_t;
 	}
 
 	void imu::resetReference(void) {
 		for(int16_t i = 0; i < NUM_REFERENCE; i++) {
 			LL_mDelay(1);
-			_accel_x_reference += (int32_t)_accel_x_value;
-			_gyro_z_reference += (int32_t)_gyro_z_value;
+			_accel_x_reference += (int16_t)_accel_x_value;
+			_accel_y_reference += (int16_t)_accel_y_value;
+			_accel_z_reference += (int16_t)_accel_z_value;
+			_gyro_z_reference += (int16_t)_gyro_z_value;
 		}
 		_accel_x_reference /= NUM_REFERENCE;
+		_accel_y_reference /= NUM_REFERENCE;
+		_accel_z_reference /= NUM_REFERENCE;
 		_gyro_z_reference /= NUM_REFERENCE;
 	}
 

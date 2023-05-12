@@ -35,7 +35,6 @@ namespace module
 		volatile float 		_angle_l, _angle_r;
 
 		void write2byte(uint16_t, uint16_t);
-		uint16_t read2byte(uint16_t, int8_t);
 	};
 }
 
