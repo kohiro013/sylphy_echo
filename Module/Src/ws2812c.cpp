@@ -25,6 +25,9 @@ namespace {
 
 void WS2812C_Initialize(void) {
 	module::ws2812c::getInstance().initialize();
+}
+
+void WS2812C_StartBootSequence(void) {
 	module::ws2812c::getInstance().startBootSequence();
 }
 

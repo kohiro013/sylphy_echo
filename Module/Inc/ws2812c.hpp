@@ -52,6 +52,7 @@ namespace module
 extern "C"
 {
 	void WS2812C_Initialize(void);
+	void WS2812C_StartBootSequence(void);
 }
 
 

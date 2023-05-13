@@ -1,6 +1,8 @@
 #include "interrupt.hpp"
 #include "encoder.hpp"
 #include "imu.hpp"
+#include "button.hpp"
+#include "ledController.hpp"
 #include "ws2812c.hpp"
 
 #define HANDLE 		(TIM5)
@@ -13,6 +15,8 @@ void Interrupt_Handler(void) {
 
 	module::encoder::getInstance().cycle();
 	module::imu::getInstance().cycle();
+	module::button::getInstance().cycle();
+	module::ledController::getInstance().cycle();
 	module::ws2812c::getInstance().cycle();
 
 	module::interrupt::getInstance().postProcess();

@@ -88,11 +88,11 @@ namespace module
 
 	int16_t irSensor::getValue(uint8_t dir) {
 		switch (dir) {
-			case 3:	return _adc_value[LED_FL_ON] - _adc_value[LED_FL_OFF];	break;
-			case 2:	return _adc_value[LED_SL_ON] - _adc_value[LED_SL_OFF];	break;
-			case 0:	return _adc_value[LED_SR_ON] - _adc_value[LED_SR_OFF];	break;
-			case 1:	return _adc_value[LED_FR_ON] - _adc_value[LED_FR_OFF];	break;
-			default: return -1;												break;
+			case FRONT_LEFT:	return _adc_value[LED_FL_ON] - _adc_value[LED_FL_OFF];	break;
+			case SIDE_LEFT:		return _adc_value[LED_SL_ON] - _adc_value[LED_SL_OFF];	break;
+			case SIDE_RIGHT:	return _adc_value[LED_SR_ON] - _adc_value[LED_SR_OFF];	break;
+			case FRONT_RIGHT:	return _adc_value[LED_FR_ON] - _adc_value[LED_FR_OFF];	break;
+			default: 			return -1;												break;
 		}
 	}
 

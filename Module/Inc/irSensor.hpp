@@ -9,6 +9,13 @@
 #include"singleton.hpp"
 #include "communicate.hpp"
 
+enum {
+	SIDE_RIGHT,
+	FRONT_RIGHT,
+	FRONT_LEFT,
+	SIDE_LEFT,
+};
+
 namespace module
 {
 	class irSensor : public Singleton<irSensor>
