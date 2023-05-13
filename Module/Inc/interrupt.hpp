@@ -3,16 +3,13 @@
 
 #include "main.h"
 #include "tim.h"
+#include "singleton.hpp"
 
 namespace module
 {
-	class interrupt
+	class interrupt : public Singleton<interrupt>
 	{
 	public:
-		static interrupt& getInstance(void) {
-			static interrupt _instance;
-			return _instance;
-		}
 		void 		preProcess(void);
 		void 		postProcess(void);
 		uint32_t 	getElapsedUsec(void) const;
@@ -23,10 +20,7 @@ namespace module
 
 	private:
 		interrupt();
-		interrupt(const interrupt&) = delete;
-		interrupt& operator=(const interrupt&) = delete;
-		interrupt(interrupt&&) = delete;
-		interrupt& operator=(interrupt&&) = delete;
+		friend class Singleton<interrupt>;
 
 		volatile uint32_t   _global_timer;
 		volatile uint32_t   _counter;

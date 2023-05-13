@@ -6,17 +6,14 @@
 #include "gpio.h"
 #include "adc.h"
 #include "tim.h"
+#include"singleton.hpp"
 #include "communicate.hpp"
 
 namespace module
 {
-	class irSensor
+	class irSensor : public Singleton<irSensor>
 	{
 	public:
-		static irSensor& getInstance(void) {
-			static irSensor _instance;
-			return _instance;
-		}
 		void initialize(void);
 		void turnOff(void);
 		void turnOn(void);
@@ -27,10 +24,7 @@ namespace module
 
 	private:
 		irSensor();
-		irSensor(const irSensor&) = delete;
-		irSensor& operator=(const irSensor&) = delete;
-		irSensor(irSensor&&) = delete;
-		irSensor& operator=(irSensor&&) = delete;
+		friend class Singleton<irSensor>;
 
 		volatile uint32_t _led_on_pattern[12];
 		volatile uint32_t _led_off_pattern;
