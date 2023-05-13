@@ -59,6 +59,7 @@ extern void Interrupt_Initialize(void);
 extern void IMU_Initialize(void);
 extern void Encoder_Initialize(void);
 extern void IRSensor_Initialize(void);
+extern void WS2812C_Initialize(void);
 extern void Myshell_Execute(void);
 /* USER CODE END PFP */
 
@@ -116,6 +117,7 @@ int main(void)
 	IMU_Initialize();
 	Encoder_Initialize();
 	IRSensor_Initialize();
+	WS2812C_Initialize();
   /* USER CODE END 2 */
 
   /* Infinite loop */
