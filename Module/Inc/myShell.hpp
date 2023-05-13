@@ -7,6 +7,7 @@
 #include "communicate.hpp"
 #include "imu.hpp"
 #include "encoder.hpp"
+#include "irSensor.hpp"
 
 extern "C"
 {

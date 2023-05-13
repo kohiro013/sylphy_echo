@@ -7,8 +7,8 @@ static int usrcmd_help(int argc, char **argv);
 static int usrcmd_info(int argc, char **argv);
 static int usrcmd_imu(int argc, char **argv);
 static int usrcmd_encoder(int argc, char **argv);
-/*static int usrcmd_sensor(int argc, char **argv);
-static int usrcmd_module_test(int argc, char **argv);
+static int usrcmd_sensor(int argc, char **argv);
+/*static int usrcmd_module_test(int argc, char **argv);
 static int usrcmd_fan(int argc, char **argv);
 static int usrcmd_maze(int argc, char **argv);
 static int usrcmd_path(int argc, char **argv);
@@ -35,8 +35,8 @@ static const cmd_table_t cmdlist[] = {
 	{ "info", 			"system info.", 		usrcmd_info 		},
 	{ "imu", 			"IMU debug.",			usrcmd_imu			},
 	{ "encoder", 		"Encoder debug.",		usrcmd_encoder		},
-/*	{ "ir_sensor", 		"IR sensor debug.",		usrcmd_sensor		},
-	{ "fan",			"suction fan test.",	usrcmd_fan			},
+	{ "ir_sensor", 		"IR sensor debug.",		usrcmd_sensor		},
+/*	{ "fan",			"suction fan test.",	usrcmd_fan			},
 	{ "module_test", 	"module test command.", usrcmd_module_test 	},
 	{ "maze",			"maze display.",		usrcmd_maze			},
 	{ "path",			"path display.",		usrcmd_path			},
@@ -60,7 +60,7 @@ static int usrcmd_encoder(int argc, char **argv)
 	module::encoder::getInstance().monitorDebug();
 	return 0;
 }
-/*
+
 static int usrcmd_sensor(int argc, char **argv)
 {
 	if(argc != 2) {
@@ -68,16 +68,16 @@ static int usrcmd_sensor(int argc, char **argv)
 		printf("  ir_sensor wall\r\n");
 		return 0;
 	} else if(ntlibc_strcmp(argv[1], "raw") == 0) {
-		Sensor_DebugPrintf();
+		module::irSensor::getInstance().monitorDebug();
 		return 0;
 	} else if (ntlibc_strcmp(argv[1], "wall") == 0) {
-		Wall_DebugPrintf();
+//		Wall_DebugPrintf();
 		return 0;
 	} else;
 	printf("  Unknown sub command found\r\n");
 	return -1;
 }
-
+/*
 static int usrcmd_module_test(int argc, char **argv)
 {
 	module_test();
