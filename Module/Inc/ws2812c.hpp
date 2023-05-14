@@ -1,5 +1,5 @@
-#ifndef __ir_sensor_H
-#define __ir_sensor_H
+#ifndef __ws2812c_H
+#define __ws2812c_H
 
 #include "main.h"
 #include "dma.h"

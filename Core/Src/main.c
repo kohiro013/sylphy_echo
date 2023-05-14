@@ -61,6 +61,7 @@ extern void Encoder_Initialize(void);
 extern void IRSensor_Initialize(void);
 extern void WS2812C_Initialize(void);
 extern void WS2812C_StartBootSequence(void);
+extern void Battery_LimiterVoltage(void);
 extern void Myshell_Execute(void);
 /* USER CODE END PFP */
 
@@ -120,6 +121,7 @@ int main(void)
 	IRSensor_Initialize();
 	WS2812C_Initialize();
 
+	Battery_LimiterVoltage();
 	WS2812C_StartBootSequence();
   /* USER CODE END 2 */
 
