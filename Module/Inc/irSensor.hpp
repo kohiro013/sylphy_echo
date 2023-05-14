@@ -6,7 +6,7 @@
 #include "gpio.h"
 #include "adc.h"
 #include "tim.h"
-#include"singleton.hpp"
+#include "singleton.hpp"
 #include "communicate.hpp"
 
 enum {

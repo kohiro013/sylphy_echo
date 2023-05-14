@@ -1,6 +1,14 @@
 #include "myShell.hpp"
 #include <stdio.h>
 #include "arm_math.h"
+#include "ntshell.h"
+#include "ntlibc.h"
+#include "ntopt.h"
+#include "communicate.hpp"
+#include "imu.hpp"
+#include "encoder.hpp"
+#include "irSensor.hpp"
+#include "suctionFan.hpp"
 
 // シェルコマンド関数郡
 static int usrcmd_help(int argc, char **argv);
@@ -8,8 +16,8 @@ static int usrcmd_info(int argc, char **argv);
 static int usrcmd_imu(int argc, char **argv);
 static int usrcmd_encoder(int argc, char **argv);
 static int usrcmd_sensor(int argc, char **argv);
-/*static int usrcmd_module_test(int argc, char **argv);
 static int usrcmd_fan(int argc, char **argv);
+/*static int usrcmd_module_test(int argc, char **argv);
 static int usrcmd_maze(int argc, char **argv);
 static int usrcmd_path(int argc, char **argv);
 static int usrcmd_log(int argc, char **argv);
@@ -36,8 +44,8 @@ static const cmd_table_t cmdlist[] = {
 	{ "imu", 			"IMU debug.",			usrcmd_imu			},
 	{ "encoder", 		"Encoder debug.",		usrcmd_encoder		},
 	{ "ir_sensor", 		"IR sensor debug.",		usrcmd_sensor		},
-/*	{ "fan",			"suction fan test.",	usrcmd_fan			},
-	{ "module_test", 	"module test command.", usrcmd_module_test 	},
+	{ "fan",			"suction fan test.",	usrcmd_fan			},
+/*	{ "module_test", 	"module test command.", usrcmd_module_test 	},
 	{ "maze",			"maze display.",		usrcmd_maze			},
 	{ "path",			"path display.",		usrcmd_path			},
 	{ "log", 			"log display.",			usrcmd_log			},
@@ -77,12 +85,6 @@ static int usrcmd_sensor(int argc, char **argv)
 	printf("  Unknown sub command found\r\n");
 	return -1;
 }
-/*
-static int usrcmd_module_test(int argc, char **argv)
-{
-	module_test();
-	return 0;
-}
 
 static int usrcmd_fan(int argc, char **argv)
 {
@@ -91,14 +93,20 @@ static int usrcmd_fan(int argc, char **argv)
 		printf("  fan stop\r\n");
 		return 0;
 	} else if(ntlibc_strcmp(argv[1], "start") == 0) {
-		SuctionFan_Start();
+		module::suctionFan::getInstance().start(0.2f);
 		return 0;
 	} else if(ntlibc_strcmp(argv[1], "stop") == 0) {
-		SuctionFan_Stop();
+		module::suctionFan::getInstance().stop();
 		return 0;
 	} else;
 	printf("  Unknown sub command found\r\n");
 	return -1;
+}
+/*
+static int usrcmd_module_test(int argc, char **argv)
+{
+	module_test();
+	return 0;
 }
 
 static int usrcmd_maze(int argc, char **argv)
