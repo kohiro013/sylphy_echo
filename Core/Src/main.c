@@ -60,6 +60,7 @@ extern void IMU_Initialize(void);
 extern void Encoder_Initialize(void);
 extern void IRSensor_Initialize(void);
 extern void WS2812C_Initialize(void);
+extern void Motor_Initialize(void);
 extern void SuctionFan_Initialize(void);
 extern void WS2812C_StartBootSequence(void);
 extern void Battery_LimiterVoltage(void);
@@ -121,6 +122,7 @@ int main(void)
 	Encoder_Initialize();
 	IRSensor_Initialize();
 	WS2812C_Initialize();
+	Motor_Initialize();
 	SuctionFan_Initialize();
 
 	Battery_LimiterVoltage();
