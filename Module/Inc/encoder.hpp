@@ -1,5 +1,5 @@
 #ifndef __encoder_H
-#define __emcoder_H
+#define __encoder_H
 
 #include "main.h"
 #include "dma.h"
@@ -27,12 +27,12 @@ namespace module
 		encoder();
 		friend class BaseModule<encoder>;
 
-		const int16_t 		_RESOLUTION;
-		volatile uint16_t	_address;
-		volatile uint16_t 	_value;
-		volatile uint16_t	_count_l, _count_r;
-		volatile uint16_t 	_count_old_l, _count_old_r;
-		volatile float 		_angle_l, _angle_r;
+		const int16_t 	_RESOLUTION;
+		uint16_t		_address;
+		uint16_t 		_value;
+		uint16_t		_count_l, _count_r;
+		uint16_t 		_count_old_l, _count_old_r;
+		float 			_angle_l, _angle_r;
 
 		void write2byte(uint16_t, uint16_t);
 	};

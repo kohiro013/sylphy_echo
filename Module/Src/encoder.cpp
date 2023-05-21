@@ -1,5 +1,6 @@
 #include "encoder.hpp"
 #include <stdio.h>
+#include <algorithm>
 #include "arm_math.h"
 
 #define SPI_HANDLE 	(SPI2)
@@ -93,7 +94,7 @@ namespace module
 	}
 
 	void encoder::update(void) {
-		volatile int32_t delta_l = static_cast<int32_t>(_count_l) - static_cast<int32_t>(_count_old_l);
+		int32_t delta_l = static_cast<int32_t>(_count_l) - static_cast<int32_t>(_count_old_l);
 		if(std::abs(delta_l) < std::min(std::abs(delta_l - _RESOLUTION), std::abs(delta_l + _RESOLUTION))) {
 			_angle_l = 2*PI * static_cast<float>(delta_l) / static_cast<float>(_RESOLUTION);
 		} else {
@@ -104,7 +105,7 @@ namespace module
 			}
 		}
 
-		volatile int32_t delta_r = static_cast<int32_t>(_count_r) - static_cast<int32_t>(_count_old_r);
+		int32_t delta_r = static_cast<int32_t>(_count_r) - static_cast<int32_t>(_count_old_r);
 		if(std::abs(delta_r) < std::min(std::abs(delta_r - _RESOLUTION), std::abs(delta_r + _RESOLUTION))) {
 			_angle_r = 2*PI * static_cast<float>(delta_r) / static_cast<float>(_RESOLUTION);
 		} else {

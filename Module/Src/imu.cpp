@@ -148,8 +148,8 @@ namespace module
 
 	void imu::callback(void) {
 		LL_GPIO_SetOutputPin(CS_PORT, CS_PIN);
-		_accel_x_value = (((uint16_t)_value[10]<<8) | ((uint16_t)_value[ 9]&0x00ff));
-		_accel_y_value = (((uint16_t)_value[ 8]<<8) | ((uint16_t)_value[ 7]&0x00ff));
+		_accel_x_value = (((uint16_t)_value[ 8]<<8) | ((uint16_t)_value[ 7]&0x00ff));
+		_accel_y_value = (((uint16_t)_value[10]<<8) | ((uint16_t)_value[ 9]&0x00ff));
 		_accel_z_value = (((uint16_t)_value[12]<<8) | ((uint16_t)_value[11]&0x00ff));
 		_gyro_z_value =  (((uint16_t)_value[ 6]<<8) | ((uint16_t)_value[ 5]&0x00ff));
 
