@@ -12,7 +12,9 @@
                 "USE_FULL_LL_DRIVER",
                 "STM32F413xx",
                 "__weak=__attribute__((weak))",
-                "__packed=__attribute__((__packed__))"
+                "__packed=__attribute__((__packed__))",
+				"__x86_64__",
+				"__LP64__"
             ],
             "compilerPath": "/opt/gcc-arm-none-eabi/bin/arm-none-eabi-gcc",
             "cStandard": "c11",
