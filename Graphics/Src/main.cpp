@@ -46,6 +46,15 @@ int main() {
 		}
 	}
 
+	application::maze::getInstance().setDebugData();
+	for(int i = 0; i < MAZE_X; i++) {
+		for(int j = 0; j < MAZE_Y; j++) {
+			t_maze temp = application::maze::getInstance().getGlobalData(j, i);
+			printf("%02d, ", temp.byte&0x0f);
+		}
+		printf("\r\n");
+	}
+
 	plt::axis("equal");
 	plt::tight_layout();
 	plt::show();

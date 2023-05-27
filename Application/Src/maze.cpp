@@ -3,11 +3,17 @@
 namespace application
 {
 	maze::maze():
-		_column{{0}},
-		_row{{0}}
+		_maze_column{{0}},
+		_maze_row{{0}},
+		_unknown_column{{0}},
+		_unknown_row{{0}}
 	{}
 
-	void maze::setDebugData(void)
+
+	/* ----------------------------------------------------------------------------------
+		デバッグ用壁情報入力
+	-----------------------------------------------------------------------------------*/
+	void maze::setDebugData(void)	// 32x32デバッグ迷路のゴールは(1, 2)
 	{
 		uint8_t test[MAZE_X][MAZE_Y] = {
 		//	  0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19  20  21  22  23  24  25  26  27  28  29  30  31
@@ -47,12 +53,49 @@ namespace application
 
 		for(uint8_t j = 0; j < MAZE_Y; j++) {
 			for(uint8_t i = 0; i < MAZE_X; i++) {
-				_column[j] |= (test[j][i]&0x01) << i;
-				_row[j]    |= ((test[j][i]&0x02) >> 1) << i;
+				_maze_column[j] |= (test[j][i]&0x01) << i;
+				_maze_row[j]    |= ((test[j][i]&0x02) >> 1) << i;
 			}
+			_unknown_column[j] = 0xFFffFFff;
+			_unknown_row[j] = 0xFFffFFff;
 		}
 	}
 
+	/* ----------------------------------------------------------------------------------
+		絶対座標系の壁情報
+	-----------------------------------------------------------------------------------*/
+	t_maze maze::getGlobalData(int8_t x, int8_t y)
+	{
+		t_maze temp;
+
+		temp.bit.east = (_maze_column[y]&(1 << x)) >> x;
+		temp.bit.north = (_maze_row[y]&(1 << x)) >> x;
+		temp.bit.west = (x == 0) ? 1 : (_maze_column[y]&(1 << (x - 1))) >> (x - 1);
+		temp.bit.south = (y == 0) ? 1 : (_maze_row[y - 1]&(1 << x)) >> x;
+
+		temp.bit.unknown_east = (_unknown_column[y]&(1 << x)) >> x;
+		temp.bit.unknown_north = (_unknown_row[y]&(1 << x)) >> x;
+		temp.bit.unknown_west = (x == 0) ? 1 : (_unknown_column[y]&(1 << (x - 1))) >> (x - 1);
+		temp.bit.unknown_south = (y == 0) ? 1 : (_unknown_row[y - 1]&(1 << x)) >> x;
+
+		return temp;
+	}
+
+	bool maze::getGlobalData(int8_t x, int8_t y, int8_t dir)
+	{
+		switch (dir) {
+			case EAST: 	return (_maze_column[y]&(1 << x)) == (1 << x);
+			case NORTH:	return (_maze_row[y]&(1 << x)) == (1 << x);
+			case WEST:	return (x == 0) ? true : (_maze_column[y]&(1 << (x - 1))) == (1 << (x - 1));
+			case SOUTH:	return (y == 0) ? true : (_unknown_row[y - 1]&(1 << x)) == (1 << x);
+			default:	break;
+		}
+		return false;
+	}
+
+	/* ----------------------------------------------------------------------------------
+		壁情報の表示
+	-----------------------------------------------------------------------------------*/
 	void maze::display(void)
 	{
 		int8_t i, j;
@@ -62,7 +105,7 @@ namespace application
 			printf("   ");
 			for(i = 0; i < MAZE_X; i++) {
 				printf("+");
-				if((_row[j]&(1 << i)) == static_cast<uint32_t>(1 << i)) {
+				if((_maze_row[j]&(1 << i)) == static_cast<uint32_t>(1 << i)) {
 					printf("----");
 				} else {
 					printf("    ");
@@ -70,7 +113,7 @@ namespace application
 			}
 			printf("+\n\r%02d |    ", j);
 			for(i = 0; i < MAZE_X; i++) {
-				if((_column[j]&(1 << i)) == static_cast<uint32_t>(1 << i)) {
+				if((_maze_column[j]&(1 << i)) == static_cast<uint32_t>(1 << i)) {
 					printf("|");
 				} else {
 					printf(" ");
