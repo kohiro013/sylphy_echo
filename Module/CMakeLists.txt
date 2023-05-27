@@ -8,6 +8,8 @@ include_directories(
     ../Library/CMSIS-DSP/PrivateInclude
     ../Library/ntshell-v0.3.1/lib/core
     ../Library/ntshell-v0.3.1/lib/util
+	../Library/MyLibrary
+	../Application/Inc
     Inc
 )
 file(GLOB SRCS

@@ -10,6 +10,7 @@
 #include "irSensor.hpp"
 #include "suctionFan.hpp"
 #include "moduleTest.hpp"
+#include "maze.hpp"
 
 // シェルコマンド関数郡
 static int usrcmd_help(int argc, char **argv);
@@ -19,8 +20,8 @@ static int usrcmd_encoder(int argc, char **argv);
 static int usrcmd_sensor(int argc, char **argv);
 static int usrcmd_fan(int argc, char **argv);
 static int usrcmd_module_test(int argc, char **argv);
-/*static int usrcmd_maze(int argc, char **argv);
-static int usrcmd_path(int argc, char **argv);
+static int usrcmd_maze(int argc, char **argv);
+/*static int usrcmd_path(int argc, char **argv);
 static int usrcmd_log(int argc, char **argv);
 static int usrcmd_loss_torque(int argc, char **argv);*/
 
@@ -47,8 +48,8 @@ static const cmd_table_t cmdlist[] = {
 	{ "ir_sensor", 		"IR sensor debug.",		usrcmd_sensor		},
 	{ "fan",			"suction fan test.",	usrcmd_fan			},
 	{ "module_test", 	"module test command.", usrcmd_module_test 	},
-/*	{ "maze",			"maze display.",		usrcmd_maze			},
-	{ "path",			"path display.",		usrcmd_path			},
+	{ "maze",			"maze display.",		usrcmd_maze			},
+/*	{ "path",			"path display.",		usrcmd_path			},
 	{ "log", 			"log display.",			usrcmd_log			},
 	{ "loss_torque",	"adjust loss torque.",	usrcmd_loss_torque 	},*/
 };
@@ -109,30 +110,30 @@ static int usrcmd_module_test(int argc, char **argv)
 	module::moduleTest::getInstance().run();
 	return 0;
 }
-/*
+
 static int usrcmd_maze(int argc, char **argv)
 {
 	if(argc == 1) {
-		Maze_LoadFlash();
-		Potential_MakeMap(GOAL_X, GOAL_Y);
-		Maze_Display();
+//		Maze_LoadFlash();
+//		Potential_MakeMap(GOAL_X, GOAL_Y);
+//		Maze_Display();
 		return 0;
 	} else if(ntlibc_strcmp(argv[1], "debug") == 0) {
-		if(MAZE_X >= 32 && MAZE_Y >= 32) {
-			Maze_SetDebugData_32x32();
-			Potential_MakeMap(1, 2);	// 32x32デバッグ迷路のゴールは(1, 2)
+//		if(MAZE_X >= 32 && MAZE_Y >= 32) {
+			application::maze::getInstance().setDebugData();
+/*			Potential_MakeMap(1, 2);	// 32x32デバッグ迷路のゴールは(1, 2)
 		} else if(MAZE_X >= 16 && MAZE_Y >= 16) {
 			Maze_SetDebugData();
 			Potential_MakeMap(7, 7);	// 16x16デバッグ迷路のゴールは(7, 7)
 		} else;
 		Maze_StoreFlash();
-		Maze_Display();
+*/		application::maze::getInstance().display();
 		return 0;
 	} else;
 	printf("  Unknown sub command found\r\n");
 	return -1;
 }
-
+/*
 static int usrcmd_path(int argc, char **argv)
 {
 	t_maze 		start_maze = Maze_GetGlobal(0, 0);
