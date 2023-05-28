@@ -2,6 +2,7 @@
 #include <vector>
 #include "position.hpp"
 #include "maze.hpp"
+#include "potential.hpp"
 #include "matplotlibcpp.h"
 
 namespace plt = matplotlibcpp;
@@ -117,10 +118,18 @@ int main() {
 	for(int i = 0; i < MAZE_SIZE; i++) {
 		ticks.push_back(i * SECTION_SIZE);
 		labels.push_back(std::to_string(i));
-		plt::text( - 30, i * 90 - 20, "90");
 	}
 	plt::xticks(ticks, labels);
 	plt::yticks(ticks, labels);
+
+	application::potential::getInstance().makeMap(GOAL_X, GOAL_Y);
+	for(int j = 0; j < MAZE_Y; j++) {
+		for(int i = 0; i < MAZE_X; i++) {
+			char ch[2];
+			sprintf(ch, "%02x", application::potential::getInstance().getAroundSection(i, j) & 0x00ff);
+			plt::text(i * 90 - 30, j * 90 - 20, {ch});
+		}
+	}
 	
 	plt::set_aspect_equal();
 	plt::tight_layout();

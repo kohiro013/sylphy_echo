@@ -34,31 +34,44 @@ namespace application
 	/* ----------------------------------------------------------------------------------
 		自己位置を回転
 	-----------------------------------------------------------------------------------*/
+	t_position position::rotate(t_position* pos, int8_t dir)
+	{
+		t_position temp = *pos;
+
+		temp.dir += (dir - 1);
+		if(temp.dir < EAST) {
+			temp.dir = SOUTH;
+		} else if(temp.dir > SOUTH) {
+			temp.dir -= (SOUTH + 1);
+		} else;
+		return temp;
+	}
+
 	t_position position::rotateMyDirection(int8_t dir)
 	{
-		ego.dir += (dir - 1);
-		if(ego.dir < EAST) {
-			ego.dir = SOUTH;
-		} else if(ego.dir > SOUTH) {
-			ego.dir -= (SOUTH + 1);
-		} else;
-		return ego;
+		return rotate(&ego, dir);
 	}
 
 	/* ----------------------------------------------------------------------------------
 		自己位置を移動
 	-----------------------------------------------------------------------------------*/
+	t_position position::move(t_position* pos, int8_t dir)
+	{
+		t_position temp = rotate(pos, dir);
+
+#ifdef linux
+		temp.x = round(cos(M_PI/180.f) * (90.f * temp.dir));
+		temp.y = round(sin(M_PI/180.f) * (90.f * temp.dir));
+#else
+		temp.x = roundf(arm_cos_f32(PI/180.f * (90.f * temp.dir)));
+		temp.y = roundf(arm_sin_f32(PI/180.f * (90.f * temp.dir)));
+#endif
+		return temp;
+	}
+
 	t_position position::moveMyPlace(int8_t dir)
 	{
-		rotateMyDirection(dir);
-#ifdef linux
-		ego.x = round(cos(M_PI/180.f) * (90.f * ego.dir));
-		ego.y = round(sin(M_PI/180.f) * (90.f * ego.dir));
-#else
-		ego.x = roundf(arm_cos_f32(PI/180.f * (90.f * ego.dir)));
-		ego.y = roundf(arm_sin_f32(PI/180.f * (90.f * ego.dir)));
-#endif
-		return ego;
+		return move(&ego, dir);
 	}
 
 	/* ----------------------------------------------------------------------------------

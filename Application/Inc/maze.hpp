@@ -28,20 +28,29 @@ namespace application
 	class maze : public Singleton<maze>
 	{
 	public:
-		void setDebugData(void);
-		//void getGlobalData(void);
-		t_maze getGlobalData(int8_t, int8_t);
-		bool getGlobalData(int8_t, int8_t, int8_t);
-		void display(void);
+		void 		setDebugData(void);
+		t_maze 		getGlobalData(int8_t, int8_t);
+		bool 		getGlobalData(int8_t, int8_t, int8_t);
+		t_maze 		getLocalData(t_position*);
+		bool 		getLocalData(t_position*, int8_t);
+		t_maze		getLocalData(int8_t, int8_t, int8_t);
+		bool 		getLocalData(int8_t, int8_t, int8_t, int8_t);
+		bool		getIsUnknown(t_position*);
+		bool		getIsUnknown(int8_t, int8_t);
+		bool		getIsUnknown(t_position*, int8_t);
+		void 		display(void);
 
 	private:
 		maze();
 		friend class Singleton<maze>;
 
-		uint32_t _maze_column[MAZE_Y];
-		uint32_t _maze_row[MAZE_Y];
-		uint32_t _unknown_column[MAZE_Y];
-		uint32_t _unknown_row[MAZE_Y];
+		uint32_t 	_maze_column[MAZE_Y];
+		uint32_t 	_maze_row[MAZE_Y];
+		uint32_t 	_unknown_column[MAZE_Y];
+		uint32_t 	_unknown_row[MAZE_Y];
+
+		uint8_t 	rotateBit(uint8_t, int8_t, int8_t);
+		t_maze		convertGlobalAndLocal(t_maze, int8_t);
 	};
 }
 

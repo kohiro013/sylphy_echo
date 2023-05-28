@@ -62,6 +62,39 @@ namespace application
 	}
 
 	/* ----------------------------------------------------------------------------------
+		ビットローテーション
+	-----------------------------------------------------------------------------------*/
+	uint8_t maze::rotateBit(uint8_t byte, int8_t n, int8_t nbit)
+	{
+		if (n == 0) {
+		} else if (n > 0) {
+			byte = ((byte << n) | (byte >> (nbit - n)));
+		} else {
+			byte = ((byte >> -n) | (byte << (nbit + n)));
+		}
+		return byte;
+	}
+
+	/* ----------------------------------------------------------------------------------
+		相対座標系と絶対座標系の相互変換
+	-----------------------------------------------------------------------------------*/
+	t_maze maze::convertGlobalAndLocal(t_maze maze, int8_t dir)
+	{
+		t_maze temp;
+
+		temp.byte = ((maze.byte & 0xf0) >> 4);
+		temp.byte = maze::rotateBit(temp.byte, dir, 4);
+
+		maze.byte = (maze.byte & 0x0f);
+		maze.byte = maze::rotateBit(maze.byte, dir, 4);
+
+		maze.byte = (maze.byte & 0x0f);
+		maze.byte |= ((temp.byte << 4) & 0xf0);
+
+		return maze;
+	}
+
+	/* ----------------------------------------------------------------------------------
 		絶対座標系の壁情報
 	-----------------------------------------------------------------------------------*/
 	t_maze maze::getGlobalData(int8_t x, int8_t y)
@@ -84,13 +117,106 @@ namespace application
 	bool maze::getGlobalData(int8_t x, int8_t y, int8_t dir)
 	{
 		switch (dir) {
-			case EAST: 	return (_maze_column[y]&(1 << x)) == (1 << x);
-			case NORTH:	return (_maze_row[y]&(1 << x)) == (1 << x);
-			case WEST:	return (x == 0) ? true : (_maze_column[y]&(1 << (x - 1))) == (1 << (x - 1));
-			case SOUTH:	return (y == 0) ? true : (_unknown_row[y - 1]&(1 << x)) == (1 << x);
-			default:	break;
+			case EAST: 	return (_maze_column[y]&(1 << x)) == static_cast<uint32_t>(1 << x);
+			case NORTH:	return (_maze_row[y]&(1 << x)) == static_cast<uint32_t>(1 << x);
+			case WEST:	return (x == 0) ? true : (_maze_column[y]&(1 << (x - 1))) == static_cast<uint32_t>(1 << (x - 1));
+			case SOUTH:	return (y == 0) ? true : (_maze_row[y - 1]&(1 << x)) == static_cast<uint32_t>(1 << x);
 		}
 		return false;
+	}
+
+	/* ----------------------------------------------------------------------------------
+		相対座標系の壁情報
+	-----------------------------------------------------------------------------------*/
+	t_maze maze::getLocalData(t_position* pos)
+	{
+		int8_t x 	= pos->x;
+		int8_t y 	= pos->y;
+		int8_t dir 	= pos->dir;
+
+		return convertGlobalAndLocal(getGlobalData(x, y), 1 - dir);
+	}
+
+	bool maze::getLocalData(t_position* pos, int8_t ldir)
+	{
+		int8_t x 	= pos->x;
+		int8_t y 	= pos->y;
+		int8_t dir 	= pos->dir;
+
+		t_maze temp = convertGlobalAndLocal(getGlobalData(x, y), 1 - dir);
+		switch (ldir) {
+			case RIGHT: return temp.bit.east;
+			case FRONT: return temp.bit.north;
+			case LEFT: 	return temp.bit.west;
+			case REAR: 	return temp.bit.south;
+		}
+		return false;
+	}
+
+	t_maze maze::getLocalData(int8_t x, int8_t y, int8_t dir)
+	{
+		return convertGlobalAndLocal(getGlobalData(x, y), 1 - dir);
+	}
+
+	bool maze::getLocalData(int8_t x, int8_t y, int8_t gdir, int8_t ldir)
+	{
+		t_maze temp = convertGlobalAndLocal(getGlobalData(x, y), 1 - gdir);
+		switch (ldir) {
+			case RIGHT: return temp.bit.east;
+			case FRONT: return temp.bit.north;
+			case LEFT: 	return temp.bit.west;
+			case REAR: 	return temp.bit.south;
+		}
+		return false;
+	}
+
+	/* ----------------------------------------------------------------------------------
+		探索済みの壁かどうかの判定
+	-----------------------------------------------------------------------------------*/
+	bool maze::getIsUnknown(t_position* pos)
+	{
+		int8_t x 	= pos->x;
+		int8_t y 	= pos->y;
+		t_maze temp = getGlobalData(x, y);
+
+		return (temp.byte & 0xf0) == 0xf0;
+	}
+
+	bool maze::getIsUnknown(int8_t x, int8_t y)
+	{
+		t_maze temp = getGlobalData(x, y);
+		return (temp.byte & 0xf0) == 0xf0;
+	}
+
+	bool maze::getIsUnknown(t_position* pos, int8_t ldir)
+	{
+		int8_t x 	= pos->x;
+		int8_t y 	= pos->y;
+		int8_t gdir = pos->dir;
+		
+		gdir += (ldir - 1);
+		if(gdir < EAST) {
+			gdir = SOUTH;
+		} else if(gdir > SOUTH) {
+			gdir -= (SOUTH + 1);
+		} else;
+
+#ifdef linux
+		x = round(cos(M_PI/180.f) * (90.f * gdir));
+		y = round(sin(M_PI/180.f) * (90.f * gdir));
+#else
+		x = roundf(arm_cos_f32(PI/180.f * (90.f * gdir)));
+		y = roundf(arm_sin_f32(PI/180.f * (90.f * gdir)));
+#endif
+
+		if((x < 0) || (y < 0)) {
+			return false;
+		} else if((x > MAZE_X-1) || (y > MAZE_Y-1)) {
+			return false;
+		} else {
+			t_maze temp = getGlobalData(x, y);
+			return (temp.byte & 0xf0) == 0xf0;
+		}
 	}
 
 	/* ----------------------------------------------------------------------------------
