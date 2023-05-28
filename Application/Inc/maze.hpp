@@ -4,16 +4,10 @@
 #include "stdio.h"
 #include "stdint.h"
 #include "singleton.hpp"
+#include "position.hpp"
 
 constexpr uint8_t MAZE_X = 32;
 constexpr uint8_t MAZE_Y = 32;
-
-enum{	// グローバル方向列挙
-	EAST	= 0,
-	NORTH	= 1,
-	WEST	= 2,
-	SOUTH	= 3,
-} t_globaldir;
 
 union t_maze {		// 壁情報用構造体
 	uint8_t byte;

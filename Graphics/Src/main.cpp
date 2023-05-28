@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include "position.hpp"
 #include "maze.hpp"
 #include "matplotlibcpp.h"
 
@@ -110,7 +111,18 @@ void plotWallAll(void)
 int main() {
 	plotWallAll();
 
-	plt::axis("equal");
+	std::vector<int> ticks;
+	std::vector<std::string> labels;
+
+	for(int i = 0; i < MAZE_SIZE; i++) {
+		ticks.push_back(i * SECTION_SIZE);
+		labels.push_back(std::to_string(i));
+		plt::text( - 30, i * 90 - 20, "90");
+	}
+	plt::xticks(ticks, labels);
+	plt::yticks(ticks, labels);
+	
+	plt::set_aspect_equal();
 	plt::tight_layout();
 	plt::show();
 
