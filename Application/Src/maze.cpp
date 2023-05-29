@@ -190,31 +190,14 @@ namespace application
 
 	bool maze::getIsUnknown(t_position* pos, int8_t ldir)
 	{
-		int8_t x 	= pos->x;
-		int8_t y 	= pos->y;
-		int8_t gdir = pos->dir;
-		
-		gdir += (ldir - 1);
-		if(gdir < EAST) {
-			gdir = SOUTH;
-		} else if(gdir > SOUTH) {
-			gdir -= (SOUTH + 1);
-		} else;
+		application::position::getInstance().move(pos, ldir);
 
-#ifdef linux
-		x = round(cos(M_PI/180.f) * (90.f * gdir));
-		y = round(sin(M_PI/180.f) * (90.f * gdir));
-#else
-		x = roundf(arm_cos_f32(PI/180.f * (90.f * gdir)));
-		y = roundf(arm_sin_f32(PI/180.f * (90.f * gdir)));
-#endif
-
-		if((x < 0) || (y < 0)) {
+		if(((pos->x) < 0) || ((pos->y) < 0)) {
 			return false;
-		} else if((x > MAZE_X-1) || (y > MAZE_Y-1)) {
+		} else if(((pos->x) > MAZE_X-1) || ((pos->y) > MAZE_Y-1)) {
 			return false;
 		} else {
-			t_maze temp = getGlobalData(x, y);
+			t_maze temp = getGlobalData((pos->x), (pos->y));
 			return (temp.byte & 0xf0) == 0xf0;
 		}
 	}

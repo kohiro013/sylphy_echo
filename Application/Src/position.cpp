@@ -3,7 +3,7 @@
 namespace application
 {
 	position::position():
-		ego{0, 0, NORTH}
+		_ego{0, 0, NORTH}
 	{}
 
 	/* ----------------------------------------------------------------------------------
@@ -11,7 +11,7 @@ namespace application
 	-----------------------------------------------------------------------------------*/
 	t_position position::getMyPlace(void)
 	{
-		return ego;
+		return _ego;
 	}
 
 	/* ----------------------------------------------------------------------------------
@@ -19,7 +19,7 @@ namespace application
 	-----------------------------------------------------------------------------------*/
 	void position::setMyPlace(t_position pos)
 	{
-		ego = pos;
+		_ego = pos;
 	}
 
 	/* ----------------------------------------------------------------------------------
@@ -27,8 +27,8 @@ namespace application
 	-----------------------------------------------------------------------------------*/
 	void position::reset(void)
 	{
-		ego.x = ego.y = 0;
-		ego.dir = NORTH;
+		_ego.x = _ego.y = 0;
+		_ego.dir = NORTH;
 	}
 
 	/* ----------------------------------------------------------------------------------
@@ -36,20 +36,18 @@ namespace application
 	-----------------------------------------------------------------------------------*/
 	t_position position::rotate(t_position* pos, int8_t dir)
 	{
-		t_position temp = *pos;
-
-		temp.dir += (dir - 1);
-		if(temp.dir < EAST) {
-			temp.dir = SOUTH;
-		} else if(temp.dir > SOUTH) {
-			temp.dir -= (SOUTH + 1);
+		(pos->dir) += (dir - 1);
+		if((pos->dir) < EAST) {
+			(pos->dir) = SOUTH;
+		} else if((pos->dir) > SOUTH) {
+			(pos->dir) -= (SOUTH + 1);
 		} else;
-		return temp;
+		return *pos;
 	}
 
 	t_position position::rotateMyDirection(int8_t dir)
 	{
-		return rotate(&ego, dir);
+		return rotate(&_ego, dir);
 	}
 
 	/* ----------------------------------------------------------------------------------
@@ -57,21 +55,20 @@ namespace application
 	-----------------------------------------------------------------------------------*/
 	t_position position::move(t_position* pos, int8_t dir)
 	{
-		t_position temp = rotate(pos, dir);
-
+		rotate(pos, dir);
 #ifdef linux
-		temp.x = round(cos(M_PI/180.f) * (90.f * temp.dir));
-		temp.y = round(sin(M_PI/180.f) * (90.f * temp.dir));
+		(pos->x) += round(cos(M_PI/180.f * (90.f * (pos->dir))));
+		(pos->y) += round(sin(M_PI/180.f * (90.f * (pos->dir))));
 #else
-		temp.x = roundf(arm_cos_f32(PI/180.f * (90.f * temp.dir)));
-		temp.y = roundf(arm_sin_f32(PI/180.f * (90.f * temp.dir)));
+		(pos->x) += roundf(arm_cos_f32(PI/180.f * (90.f * (pos->dir))));
+		(pos->y) += roundf(arm_sin_f32(PI/180.f * (90.f * (pos->dir))));
 #endif
-		return temp;
+		return *pos;
 	}
 
 	t_position position::moveMyPlace(int8_t dir)
 	{
-		return move(&ego, dir);
+		return move(&_ego, dir);
 	}
 
 	/* ----------------------------------------------------------------------------------
@@ -80,14 +77,14 @@ namespace application
 	bool position::getIsGoal(int8_t gx, int8_t gy)
 	{
 		if(gx == 0 && gy == 0) {
-			if(ego.x == 0 && ego.y == 0) {
+			if(_ego.x == 0 && _ego.y == 0) {
 				return true;
 			} else {
 				return false;
 			}
 		} else {
-			if(gx <= ego.x && ego.x < gx + GOAL_SIZE) {
-				if(gy <= ego.y && ego.y < gy + GOAL_SIZE) {
+			if(gx <= _ego.x && _ego.x < gx + GOAL_SIZE) {
+				if(gy <= _ego.y && _ego.y < gy + GOAL_SIZE) {
 					return true;
 				} else;
 			} else;

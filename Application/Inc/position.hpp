@@ -53,7 +53,7 @@ namespace application
 		position();
 		friend class Singleton<position>;
 
-		t_position ego;
+		t_position _ego;
 	};
 }
 

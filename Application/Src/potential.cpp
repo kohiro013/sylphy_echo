@@ -24,14 +24,14 @@ namespace application
 
 	uint16_t potential::getAroundSection(t_position* pos, int8_t ldir)
 	{
-		t_position temp = application::position::getInstance().move(pos, ldir);
+		application::position::getInstance().move(pos, ldir);
 
-		if((temp.x < 0) || (temp.y < 0)) {
+		if(((pos->x) < 0) || ((pos->y) < 0)) {
 			return 0xffff;
-		} else if((temp.x > MAZE_X-1) || (temp.y > MAZE_Y-1)) {
+		} else if(((pos->x) > MAZE_X-1) || ((pos->y) > MAZE_Y-1)) {
 			return 0xffff;
 		} else {
-			return _potential[temp.x][temp.y];
+			return _potential[pos->x][pos->y];
 		}
 	}
 

@@ -3,6 +3,7 @@
 #include "position.hpp"
 #include "maze.hpp"
 #include "potential.hpp"
+#include "adachi.hpp"
 #include "matplotlibcpp.h"
 
 namespace plt = matplotlibcpp;
@@ -109,6 +110,33 @@ void plotWallAll(void)
 	}
 }
 
+void plotMove(int dir)
+{
+	t_position old_position = application::position::getInstance().getMyPlace();
+	t_position new_position = application::position::getInstance().moveMyPlace(dir);
+	
+	std::vector<double> x = {static_cast<double>(old_position.x) * SECTION_SIZE,
+							 static_cast<double>(new_position.x) * SECTION_SIZE};
+	std::vector<double> y = {static_cast<double>(old_position.y) * SECTION_SIZE,
+							 static_cast<double>(new_position.y) * SECTION_SIZE};
+
+	switch (old_position.dir) {
+		case EAST:	x[0] -= HALF_SECTION_SIZE;	break;
+		case NORTH:	y[0] -= HALF_SECTION_SIZE;	break;
+		case WEST:	x[0] += HALF_SECTION_SIZE;	break;
+		case SOUTH:	y[0] += HALF_SECTION_SIZE;	break;
+	}
+
+	switch (new_position.dir) {
+		case EAST:	x[1] -= HALF_SECTION_SIZE;	break;
+		case NORTH:	y[1] -= HALF_SECTION_SIZE;	break;
+		case WEST:	x[1] += HALF_SECTION_SIZE;	break;
+		case SOUTH:	y[1] += HALF_SECTION_SIZE;	break;
+	}
+
+	plt::plot(x, y, "b-");
+}
+
 int main() {
 	plotWallAll();
 
@@ -130,6 +158,13 @@ int main() {
 			plt::text(i * 90 - 30, j * 90 - 20, {ch});
 		}
 	}
+
+	application::position::getInstance().reset();
+	application::position::getInstance().moveMyPlace(FRONT);
+	plotMove(FRONT);
+	plotMove(RIGHT);
+	plotMove(RIGHT);
+	plotMove(LEFT);
 	
 	plt::set_aspect_equal();
 	plt::tight_layout();
