@@ -14,6 +14,7 @@ namespace application
 	{
 	public:
 		int8_t 		getNextDirection(t_position*);
+		int8_t		getUnknownDirection(t_position*);
 
 	private:
 		adachi();
