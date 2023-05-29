@@ -86,8 +86,6 @@ void plotWall(int x, int y, int dir)
 
 void plotWallAll(void)
 {
-	application::maze::getInstance().setDebugData();
-
 	plotPillar();
 	for(int i = 0; i < MAZE_X; i++) {
 		plotWall(i, 0, SOUTH);
@@ -136,25 +134,16 @@ void plotMove(int dir)
 	plt::plot(x, y, "b-");
 }
 
-int main() {
-	plotWallAll();
-
-	std::vector<int> ticks;
-	std::vector<std::string> labels;
-
-	for(int i = 0; i < MAZE_SIZE; i++) {
-		ticks.push_back(i * SECTION_SIZE);
-		labels.push_back(std::to_string(i));
-	}
-	plt::xticks(ticks, labels);
-	plt::yticks(ticks, labels);
-
+void plotAdachi(const bool is_display_map = true)
+{
 	application::potential::getInstance().makeMap(GOAL_X, GOAL_Y);
-	for(int j = 0; j < MAZE_Y; j++) {
-		for(int i = 0; i < MAZE_X; i++) {
-			char ch[2];
-			sprintf(ch, "%02x", application::potential::getInstance().getAroundSection(i, j) & 0x00ff);
-			plt::text(i * 90 - 30, j * 90 - 20, {ch});
+	if(is_display_map) {
+		for(int j = 0; j < MAZE_Y; j++) {
+			for(int i = 0; i < MAZE_X; i++) {
+				char ch[2];
+				sprintf(ch, "%02x", application::potential::getInstance().getAroundSection(i, j) & 0x00ff);
+				plt::text(i * 90 - 30, j * 90 - 20, {ch});
+			}
 		}
 	}
 
@@ -183,7 +172,27 @@ int main() {
 		case SOUTH:	y[0] += HALF_SECTION_SIZE;	break;
 	}
 	plt::plot(x, y, "b-");
+}
 
+void Dijkstra_DebugPrintf(int8_t, int8_t);
+
+int main() {
+	application::maze::getInstance().setDebugData();
+	plotWallAll();
+	plotAdachi(false);
+
+	application::position::getInstance().reset();
+	Dijkstra_DebugPrintf(GOAL_X, GOAL_Y);
+
+	std::vector<int> ticks;
+	std::vector<std::string> labels;
+
+	for(int i = 0; i < MAZE_SIZE; i++) {
+		ticks.push_back(i * SECTION_SIZE);
+		labels.push_back(std::to_string(i));
+	}
+	plt::xticks(ticks, labels);
+	plt::yticks(ticks, labels);
 	
 	plt::set_aspect_equal();
 	plt::tight_layout();
