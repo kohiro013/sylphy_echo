@@ -36,18 +36,21 @@ namespace application
 	-----------------------------------------------------------------------------------*/
 	t_position position::rotate(t_position* pos, int8_t dir)
 	{
-		(pos->dir) += (dir - 1);
-		if((pos->dir) < EAST) {
-			(pos->dir) = SOUTH;
-		} else if((pos->dir) > SOUTH) {
-			(pos->dir) -= (SOUTH + 1);
+		t_position temp = *pos;
+
+		temp.dir += (dir - 1);
+		if(temp.dir < EAST) {
+			temp.dir = SOUTH;
+		} else if(temp.dir > SOUTH) {
+			temp.dir -= (SOUTH + 1);
 		} else;
-		return *pos;
+		return temp;
 	}
 
 	t_position position::rotateMyDirection(int8_t dir)
 	{
-		return rotate(&_ego, dir);
+		_ego = rotate(&_ego, dir);
+		return _ego;
 	}
 
 	/* ----------------------------------------------------------------------------------
@@ -55,20 +58,21 @@ namespace application
 	-----------------------------------------------------------------------------------*/
 	t_position position::move(t_position* pos, int8_t dir)
 	{
-		rotate(pos, dir);
+		t_position temp = rotate(pos, dir);
 #ifdef linux
-		(pos->x) += round(cos(M_PI/180.f * (90.f * (pos->dir))));
-		(pos->y) += round(sin(M_PI/180.f * (90.f * (pos->dir))));
+		temp.x += round(cos(M_PI/180.f * (90.f * temp.dir)));
+		temp.y += round(sin(M_PI/180.f * (90.f * temp.dir)));
 #else
-		(pos->x) += roundf(arm_cos_f32(PI/180.f * (90.f * (pos->dir))));
-		(pos->y) += roundf(arm_sin_f32(PI/180.f * (90.f * (pos->dir))));
+		temp.x += round(arm_cos_f32(PI/180.f * (90.f * temp.dir)));
+		temp.y += round(arm_sin_f32(PI/180.f * (90.f * temp.dir)));
 #endif
-		return *pos;
+		return temp;
 	}
 
 	t_position position::moveMyPlace(int8_t dir)
 	{
-		return move(&_ego, dir);
+		_ego = move(&_ego, dir);
+		return _ego;
 	}
 
 	/* ----------------------------------------------------------------------------------

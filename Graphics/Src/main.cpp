@@ -133,7 +133,6 @@ void plotMove(int dir)
 		case WEST:	x[1] += HALF_SECTION_SIZE;	break;
 		case SOUTH:	y[1] += HALF_SECTION_SIZE;	break;
 	}
-
 	plt::plot(x, y, "b-");
 }
 
@@ -160,11 +159,31 @@ int main() {
 	}
 
 	application::position::getInstance().reset();
-	application::position::getInstance().moveMyPlace(FRONT);
-	plotMove(FRONT);
-	plotMove(RIGHT);
-	plotMove(RIGHT);
-	plotMove(LEFT);
+	t_position ego = application::position::getInstance().moveMyPlace(FRONT);
+	plt::plot({0, 0}, {0, HALF_SECTION_SIZE}, "b-");
+
+	while(application::position::getInstance().getIsGoal(GOAL_X, GOAL_Y) == false) {
+		ego = application::position::getInstance().getMyPlace();
+		int8_t next_direction = application::adachi::getInstance().getNextDirection(&ego);
+		plotMove(next_direction);
+	}
+
+	for(int i = 0; i < GOAL_SIZE - 1; i++) {
+		plotMove(FRONT);
+	}
+	ego = application::position::getInstance().getMyPlace();
+	std::vector<double> x = {static_cast<double>(ego.x) * SECTION_SIZE,
+							 static_cast<double>(ego.x) * SECTION_SIZE};
+	std::vector<double> y = {static_cast<double>(ego.y) * SECTION_SIZE,
+							 static_cast<double>(ego.y) * SECTION_SIZE};
+	switch (ego.dir) {
+		case EAST:	x[0] -= HALF_SECTION_SIZE;	break;
+		case NORTH:	y[0] -= HALF_SECTION_SIZE;	break;
+		case WEST:	x[0] += HALF_SECTION_SIZE;	break;
+		case SOUTH:	y[0] += HALF_SECTION_SIZE;	break;
+	}
+	plt::plot(x, y, "b-");
+
 	
 	plt::set_aspect_equal();
 	plt::tight_layout();

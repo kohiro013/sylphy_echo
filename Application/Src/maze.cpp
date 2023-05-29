@@ -190,15 +190,15 @@ namespace application
 
 	bool maze::getIsUnknown(t_position* pos, int8_t ldir)
 	{
-		application::position::getInstance().move(pos, ldir);
+		t_position temp = application::position::getInstance().move(pos, ldir);
 
-		if(((pos->x) < 0) || ((pos->y) < 0)) {
+		if((temp.x < 0) || (temp.y < 0)) {
 			return false;
-		} else if(((pos->x) > MAZE_X-1) || ((pos->y) > MAZE_Y-1)) {
+		} else if((temp.x > MAZE_X-1) || (temp.y > MAZE_Y-1)) {
 			return false;
 		} else {
-			t_maze temp = getGlobalData((pos->x), (pos->y));
-			return (temp.byte & 0xf0) == 0xf0;
+			t_maze unknown = getGlobalData(temp.x, temp.y);
+			return (unknown.byte & 0xf0) == 0xf0;
 		}
 	}
 
