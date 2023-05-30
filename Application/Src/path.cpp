@@ -348,8 +348,8 @@ namespace application
 			} else;
 
 			if(_path[i].type == TURN_45OUT && _path[i + 1].straight == 0 && _path[i + 1].type == TURN_45IN) {
-				if(_path[i].direction == _path[i + 1].direction ) {
-					_path[i].type == TURN_KOJIMA;
+				if(_path[i].direction == _path[i + 1].direction) {
+					_path[i].type = TURN_KOJIMA;
 					path::compress(i);
 				} else;
 			} else;

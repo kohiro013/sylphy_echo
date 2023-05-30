@@ -109,7 +109,7 @@ void plotWallAll(void)
 	}
 }
 
-void plotMove(int dir)
+void plotMove(int dir, std::string color)
 {
 	t_position old_position = application::position::getInstance().getMyPlace();
 	t_position new_position = application::position::getInstance().moveMyPlace(dir);
@@ -132,7 +132,7 @@ void plotMove(int dir)
 		case WEST:	x[1] += HALF_SECTION_SIZE;	break;
 		case SOUTH:	y[1] += HALF_SECTION_SIZE;	break;
 	}
-	plt::plot(x, y, "b-");
+	plt::plot(x, y, color);
 }
 
 void plotAdachi(const bool is_display_map = true)
@@ -155,11 +155,11 @@ void plotAdachi(const bool is_display_map = true)
 	while(application::position::getInstance().getIsGoal(GOAL_X, GOAL_Y) == false) {
 		ego = application::position::getInstance().getMyPlace();
 		int8_t next_direction = application::adachi::getInstance().getNextDirection(&ego);
-		plotMove(next_direction);
+		plotMove(next_direction, "b-");
 	}
 
 	for(int i = 0; i < GOAL_SIZE - 1; i++) {
-		plotMove(FRONT);
+		plotMove(FRONT, "b-");
 	}
 	ego = application::position::getInstance().getMyPlace();
 	std::vector<double> x = {static_cast<double>(ego.x) * SECTION_SIZE,
@@ -175,6 +175,92 @@ void plotAdachi(const bool is_display_map = true)
 	plt::plot(x, y, "b-");
 }
 
+void plotPath(void)
+{
+	int num_goal = application::path::getInstance().getSequenceNumber();
+	t_path path_old = {0, 0, 0};
+	t_path path_new;
+
+	application::position::getInstance().reset();
+	application::position::getInstance().moveMyPlace(FRONT);
+	plt::plot({0, 0}, {0, HALF_SECTION_SIZE}, "g-");
+
+	for(int num = 0; num < num_goal; num++) {
+		path_new = application::path::getInstance().getSequence(num);
+		// 直線の描画
+		if(path_new.type <= TURN_135IN) {
+			if(num == 0) {
+				path_new.straight --;
+			} else;
+			for(int i = 0; i < path_new.straight/2; i++) {
+				plotMove(FRONT, "g-");
+			}
+		// 斜めの描画
+		} else {
+			int dir = path_old.direction;
+			for(int i = 0; i < path_new.straight; i++) {
+				dir = (dir + 2) % 4;
+				plotMove(dir, "g-");
+			}
+		}
+
+		// ターンの描画
+		switch (path_new.type) {
+			case TURN_90L:
+				plotMove(path_new.direction, "g-");
+				plotMove(FRONT, "g-");
+				break;
+
+			case TURN_180:
+				plotMove(FRONT, "g-");
+				plotMove(path_new.direction, "g-");
+				plotMove(path_new.direction, "g-");
+				break;
+
+			case TURN_45IN:
+				plotMove(FRONT, "g-");
+				plotMove(path_new.direction, "g-");
+				break;
+
+			case TURN_45OUT:
+				plotMove(path_new.direction, "g-");
+				break;
+
+			case TURN_135IN:
+				plotMove(FRONT, "g-");
+				plotMove(path_new.direction, "g-");
+				plotMove(path_new.direction, "g-");
+				break;
+
+			case TURN_135OUT:
+				plotMove(2 - path_new.direction, "g-");
+				plotMove(path_new.direction, "g-");
+				plotMove(path_new.direction, "g-");
+				break;
+
+			case TURN_90V:
+				plotMove(path_new.direction, "g-");
+				plotMove(path_new.direction, "g-");
+				break;
+			
+			case TURN_KOJIMA:
+				plotMove(path_new.direction, "g-");
+				plotMove(FRONT, "g-");
+				plotMove(path_new.direction, "g-");
+				break;
+
+			default:
+				printf("Error!\r\n");
+				return;
+		}
+		path_old = path_new;
+	}
+
+	for(int i = 0; i < GOAL_SIZE - 1; i++) {
+		plotMove(FRONT, "g-");
+	}
+}
+
 void Dijkstra_DebugPrintf(int8_t, int8_t);
 t_position Dijkstra_ConvertPath(int8_t, int8_t);
 
@@ -185,7 +271,7 @@ int main() {
 
 	application::position::getInstance().reset();
 	Dijkstra_ConvertPath(GOAL_X, GOAL_Y);
-	application::path::getInstance().displayAll();
+	plotPath();
 
 	std::vector<int> ticks;
 	std::vector<std::string> labels;
