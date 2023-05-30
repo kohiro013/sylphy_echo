@@ -3,6 +3,7 @@
 #include "position.hpp"
 #include "maze.hpp"
 #include "potential.hpp"
+#include "path.hpp"
 
 //コマンドリスト（GO1は１区画前進を意味する）
 #define GO1    1//必ず１である必要がある
@@ -362,4 +363,314 @@ void Dijkstra_DebugPrintf( int8_t gx, int8_t gy )
 	} else {
 		printf("軌道が見つからなかった\r\n\n");
 	}
+}
+
+t_position Dijkstra_ConvertPath(int8_t gx, int8_t gy)
+{
+	uint16_t route[255];
+	uint16_t i;
+	t_position my = {0, 0, NORTH};
+
+	if(dijkstra(gx, gy, route)) {
+		application::position::getInstance().reset();
+		application::path::getInstance().reset();
+
+		for(i = 0; route[i] != SNODE; i++) {
+			if(application::position::getInstance().getIsGoal(gx, gy) == true) {
+				break;
+			} else;
+
+			// 大回り90度ターン
+			if( route[i] == DIA_TO_CLOTHOIDL && route[i+1] == DIA_FROM_CLOTHOIDL ) {
+				my = application::position::getInstance().moveMyPlace(FRONT);
+				application::path::getInstance().setStraightSection( 1 );
+				if( application::position::getInstance().getIsGoal(gx, gy) == true ) {
+					application::path::getInstance().setStraightSection( 1 );
+					break;
+				} else;
+				my = application::position::getInstance().moveMyPlace(LEFT);
+				application::path::getInstance().setTurnSection( TURN_90, LEFT );
+				application::path::getInstance().setStraightSection( 1 );
+				i++;
+				continue;
+			} else if( route[i] == DIA_TO_CLOTHOIDR && route[i+1] == DIA_FROM_CLOTHOIDR ) {
+				my = application::position::getInstance().moveMyPlace(FRONT);
+				application::path::getInstance().setStraightSection( 1 );
+				if( application::position::getInstance().getIsGoal(gx, gy) == true ) {
+					application::path::getInstance().setStraightSection( 1 );
+					break;
+				} else;
+				my = application::position::getInstance().moveMyPlace(RIGHT);
+				application::path::getInstance().setTurnSection( TURN_90, RIGHT );
+				application::path::getInstance().setStraightSection( 1 );
+				i++;
+				continue;
+			} else;
+
+			// 180度ターン
+			if( route[i] == DIA_TO_CLOTHOIDL && route[i+1] == DIA_TURNL && route[i+2] == DIA_FROM_CLOTHOIDL ) {
+				my = application::position::getInstance().moveMyPlace(FRONT);
+				my = application::position::getInstance().moveMyPlace(LEFT);
+				my = application::position::getInstance().moveMyPlace(LEFT);
+				application::path::getInstance().setStraightSection( 1 );
+				application::path::getInstance().setTurnSection( TURN_90, LEFT );
+				application::path::getInstance().setTurnSection( TURN_90, LEFT );
+				application::path::getInstance().setStraightSection( 1 );
+				i += 2;
+				continue;
+			} else if( route[i] == DIA_TO_CLOTHOIDR && route[i+1] == DIA_TURNR && route[i+2] == DIA_FROM_CLOTHOIDR ) {
+				my = application::position::getInstance().moveMyPlace(FRONT);
+				my = application::position::getInstance().moveMyPlace(RIGHT);
+				my = application::position::getInstance().moveMyPlace(RIGHT);
+				application::path::getInstance().setStraightSection( 1 );
+				application::path::getInstance().setTurnSection( TURN_90, RIGHT );
+				application::path::getInstance().setTurnSection( TURN_90, RIGHT );
+				application::path::getInstance().setStraightSection( 1 );
+				i += 2;
+				continue;
+			} else;
+
+			// 斜め侵入135度ターン
+			if( route[i] == DIA_TO_CLOTHOIDL && route[i+1] == DIA_TURNL && DIA_GO1 <= route[i+2] && route[i+2] <= DIA_GO63 ) {
+				my = application::position::getInstance().moveMyPlace(FRONT);
+				my = application::position::getInstance().moveMyPlace(LEFT);
+				application::path::getInstance().setStraightSection( 1 );
+				application::path::getInstance().setTurnSection( TURN_90, LEFT );
+				if( application::position::getInstance().getIsGoal(gx, gy) == true ) {
+					application::path::getInstance().setStraightSection( 1 );
+					break;
+				} else;
+				my = application::position::getInstance().moveMyPlace(LEFT);
+				application::path::getInstance().setTurnSection( TURN_90, LEFT );
+				if( application::position::getInstance().getIsGoal(gx, gy) == true ) {
+					application::path::getInstance().setStraightSection( 1 );
+					break;
+				} else;
+				if( route[i+2] <= DIA_GO1 ) {
+					i++;
+				} else {
+					route[i+2]--;
+				}
+				i++;
+				continue;
+			} else if( route[i] == DIA_TO_CLOTHOIDR && route[i+1] == DIA_TURNR && DIA_GO1 <= route[i+2] && route[i+2] <= DIA_GO63 ) {
+				my = application::position::getInstance().moveMyPlace(FRONT);
+				my = application::position::getInstance().moveMyPlace(RIGHT);
+				application::path::getInstance().setStraightSection( 1 );
+				application::path::getInstance().setTurnSection( TURN_90, RIGHT );
+				if( application::position::getInstance().getIsGoal(gx, gy) == true ) {
+					application::path::getInstance().setStraightSection( 1 );
+					break;
+				} else;
+				my = application::position::getInstance().moveMyPlace(RIGHT);
+				application::path::getInstance().setTurnSection( TURN_90, RIGHT );
+				if( application::position::getInstance().getIsGoal(gx, gy) == true ) {
+					application::path::getInstance().setStraightSection( 1 );
+					break;
+				} else;
+				if( route[i+2] <= DIA_GO1 ) {
+					i++;
+				} else {
+					route[i+2]--;
+				}
+				i++;
+				continue;
+			} else;
+
+			// 斜め脱出135度ターン
+			if( route[i] == DIA_TURNL && route[i+1] == DIA_FROM_CLOTHOIDL ) {
+				my = application::position::getInstance().moveMyPlace(LEFT);
+				application::path::getInstance().setTurnSection( TURN_90, LEFT );
+				if( application::position::getInstance().getIsGoal(gx, gy) == true ) {
+					application::path::getInstance().setStraightSection( 1 );
+					break;
+				} else {
+					my = application::position::getInstance().moveMyPlace(LEFT);
+					application::path::getInstance().setTurnSection( TURN_90, LEFT );
+					application::path::getInstance().setStraightSection( 1 );
+				}
+				i++;
+				continue;
+			} else if( route[i] == DIA_TURNR && route[i+1] == DIA_FROM_CLOTHOIDR ) {
+				my = application::position::getInstance().moveMyPlace(RIGHT);
+				application::path::getInstance().setTurnSection( TURN_90, RIGHT );
+				if( application::position::getInstance().getIsGoal(gx, gy) == true ) {
+					application::path::getInstance().setStraightSection( 1 );
+					break;
+				} else {
+					my = application::position::getInstance().moveMyPlace(RIGHT);
+					application::path::getInstance().setTurnSection( TURN_90, RIGHT );
+					application::path::getInstance().setStraightSection( 1 );
+				}
+				i++;
+				continue;
+			} else;
+
+			// V90度ターン
+			if( route[i] == DIA_TURNL && DIA_GO1 <= route[i+1] && route[i+1] <= DIA_GO63 ) {
+				my = application::position::getInstance().moveMyPlace(LEFT);
+				application::path::getInstance().setTurnSection( TURN_90, LEFT );
+				if( application::position::getInstance().getIsGoal(gx, gy) == true ) {
+					application::path::getInstance().setStraightSection( 1 );
+					break;
+				} else {
+					my = application::position::getInstance().moveMyPlace(LEFT);
+					application::path::getInstance().setTurnSection( TURN_90, LEFT );
+				}
+				if( route[i+1] <= DIA_GO1 ) {
+					i++;
+				} else {
+					route[i+1]--;
+				}
+				continue;
+			} else if( route[i] == DIA_TURNR && DIA_GO1 <= route[i+1] && route[i+1] <= DIA_GO63 ) {
+				my = application::position::getInstance().moveMyPlace(RIGHT);
+				application::path::getInstance().setTurnSection( TURN_90, RIGHT );
+				if( application::position::getInstance().getIsGoal(gx, gy) == true ) {
+					application::path::getInstance().setStraightSection( 1 );
+					break;
+				} else {
+					my = application::position::getInstance().moveMyPlace(RIGHT);
+					application::path::getInstance().setTurnSection( TURN_90, RIGHT );
+				}
+				if( route[i+1] <= DIA_GO1 ) {
+					i++;
+				} else {
+					route[i+1]--;
+				}
+				continue;
+			} else;
+
+			// 斜め侵入45度ターン
+			if( route[i] == DIA_TO_CLOTHOIDL && DIA_GO1 <= route[i+1] && route[i+1] <= DIA_GO63 ) {
+				my = application::position::getInstance().moveMyPlace( FRONT );
+				my = application::position::getInstance().moveMyPlace( LEFT );
+				application::path::getInstance().setStraightSection( 1 );
+				application::path::getInstance().setTurnSection( TURN_90, LEFT );
+				if( application::position::getInstance().getIsGoal(gx, gy) == true ) {
+					application::path::getInstance().setStraightSection( 1 );
+					break;
+				} else;
+				if( route[i+1] <= DIA_GO1 ) {
+					i++;
+				} else {
+					route[i+1]--;
+				}
+				continue;
+			} else if( route[i] == DIA_TO_CLOTHOIDR && DIA_GO1 <= route[i+1] && route[i+1] <= DIA_GO63 ) {
+				my = application::position::getInstance().moveMyPlace( FRONT );
+				my = application::position::getInstance().moveMyPlace( RIGHT );
+				application::path::getInstance().setStraightSection( 1 );
+				application::path::getInstance().setTurnSection( TURN_90, RIGHT );
+				if( application::position::getInstance().getIsGoal(gx, gy) == true ) {
+					application::path::getInstance().setStraightSection( 1 );
+					break;
+				} else;
+				if( route[i+1] <= DIA_GO1 ) {
+					i++;
+				} else {
+					route[i+1]--;
+				}
+				continue;
+			} else;
+
+			// 斜め脱出45度ターン
+			if( route[i] == DIA_FROM_CLOTHOIDL ) {
+				my = application::position::getInstance().moveMyPlace( LEFT );
+				application::path::getInstance().setTurnSection( TURN_90, LEFT );
+				application::path::getInstance().setStraightSection( 1 );
+				//printf("%2d : Turn_45out_Left\r\n", i);
+				continue;
+			} else if( route[i] == DIA_FROM_CLOTHOIDR ) {
+				my = application::position::getInstance().moveMyPlace( RIGHT );
+				application::path::getInstance().setTurnSection( TURN_90, RIGHT );
+				application::path::getInstance().setStraightSection( 1 );
+				//printf("%2d : Turn_45out_Right\r\n", i);
+				continue;
+			} else;
+
+			// 直進
+			if( GO1 <= route[i] && route[i] <= GO31 ) {
+				for( int16_t j = 0; j < route[i]; j++ ) {
+					my = application::position::getInstance().moveMyPlace( FRONT );
+					application::path::getInstance().setStraightSection( 2 );
+					if( application::position::getInstance().getIsGoal(gx, gy) == true ) {
+						break;
+					} else;
+				}
+				continue;
+			} else if( DIA_GO1 <= route[i] && route[i] <= DIA_GO63 ) {
+				for( int16_t j = 0; j < route[i]-DIA_GO1+1; j++ ) {
+					if( (route[i-1]%2) == 0 ) { // 右
+						if( j%2 == 0 ) {
+							my = application::position::getInstance().moveMyPlace( LEFT  );
+							application::path::getInstance().setTurnSection( TURN_90, LEFT );
+							if( application::position::getInstance().getIsGoal(gx, gy) == true ) {
+								application::path::getInstance().setStraightSection( 1 );
+								break;
+							} else;
+						} else {
+							my = application::position::getInstance().moveMyPlace( RIGHT );
+							application::path::getInstance().setTurnSection( TURN_90, RIGHT );
+							if( application::position::getInstance().getIsGoal(gx, gy) == true ) {
+								application::path::getInstance().setStraightSection( 1 );
+								break;
+							} else;
+						}
+					} else { // 左
+						if( j%2 == 0 ) {
+							my = application::position::getInstance().moveMyPlace( RIGHT );
+							application::path::getInstance().setTurnSection( TURN_90, RIGHT );
+							if( application::position::getInstance().getIsGoal(gx, gy) == true ) {
+								application::path::getInstance().setStraightSection( 1 );
+								break;
+							} else;
+						} else {
+							my = application::position::getInstance().moveMyPlace( LEFT  );
+							application::path::getInstance().setTurnSection( TURN_90, LEFT );
+							if( application::position::getInstance().getIsGoal(gx, gy) == true ) {
+								application::path::getInstance().setStraightSection( 1 );
+								break;
+							} else;
+						}
+					}
+				}
+				continue;
+			} else;
+
+			printf("%2d : Error! : ", i);
+			if(GO1<=route[i] && route[i]<=GO31)
+				printf("%dマス直進\r\n",route[i]);
+			if(DIA_GO1<=route[i] && route[i]<=DIA_GO63)
+				printf("%dマス斜め直進\r\n",route[i]-DIA_GO1+1);
+			if(route[i]==TURNR)
+				printf("右９０度方向へスラローム\r\n");
+			if(route[i]==TURNL)
+				printf("左９０度方向へスラローム\r\n");
+			if(route[i]==DIA_TO_CLOTHOIDR)
+				printf("直進から１マス使って斜め右方向へ\r\n");
+			if(route[i]==DIA_TO_CLOTHOIDL)
+				printf("直進から１マス使って斜め左方向へ\r\n");
+			if(route[i]==DIA_FROM_CLOTHOIDR)
+				printf("斜め右方向から直進へ\r\n");
+			if(route[i]==DIA_FROM_CLOTHOIDL)
+				printf("斜め左方向から直進へ\r\n");
+			if(route[i]==DIA_TURNR)
+				printf("斜めから右９０度方向ターンして斜めへ\r\n");
+			if(route[i]==DIA_TURNL)
+				printf("斜めから左９０度方向ターンして斜めへ\r\n");
+			if(route[i]==SNODE)
+				printf("おわり\r\n");
+		}
+		application::path::getInstance().setStraightSection( (GOAL_SIZE - 1)*2 );
+		for( i = 0; i < GOAL_SIZE - 1; i++ ) {
+			my = application::position::getInstance().moveMyPlace( FRONT );
+		}
+		application::path::getInstance().setTurnSection(GOAL, 0);
+		application::path::getInstance().convert();
+	} else {
+		my.x = my.y = my.dir = -1;
+		printf("軌道が見つからなかった\r\n");
+	}
+	return my;
 }

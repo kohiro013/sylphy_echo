@@ -3,6 +3,7 @@
 #include "position.hpp"
 #include "maze.hpp"
 #include "potential.hpp"
+#include "path.hpp"
 #include "adachi.hpp"
 #include "matplotlibcpp.h"
 
@@ -175,6 +176,7 @@ void plotAdachi(const bool is_display_map = true)
 }
 
 void Dijkstra_DebugPrintf(int8_t, int8_t);
+t_position Dijkstra_ConvertPath(int8_t, int8_t);
 
 int main() {
 	application::maze::getInstance().setDebugData();
@@ -182,7 +184,8 @@ int main() {
 	plotAdachi(false);
 
 	application::position::getInstance().reset();
-	Dijkstra_DebugPrintf(GOAL_X, GOAL_Y);
+	Dijkstra_ConvertPath(GOAL_X, GOAL_Y);
+	application::path::getInstance().displayAll();
 
 	std::vector<int> ticks;
 	std::vector<std::string> labels;
